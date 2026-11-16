@@ -1,8 +1,9 @@
 # FU#K!! G#MBLING - Windows installer. Run as Administrator.
 # Usage: install.ps1 -Countries tr,za      (the GUI calls this; confirmation happens in the GUI)
+#        install.ps1 -Countries za -Strict  (also DNS filter: blocks adult sites too)
 #        install.ps1 -RequestUninstall      (starts 72 h cooldown)
 #        install.ps1 -CancelUninstall
-param([string[]]$Countries = @('global'), [switch]$RequestUninstall, [switch]$CancelUninstall)
+param([string[]]$Countries = @('global'), [switch]$Strict, [switch]$RequestUninstall, [switch]$CancelUninstall)
 $ErrorActionPreference = 'Stop'
 $Countries = @($Countries -split ',' | ForEach-Object { $_.Trim().ToLower() } | Where-Object { $_ -match '^[a-z]{2,6}$' })
 $Base  = 'C:\ProgramData\FuckGambling'
@@ -29,6 +30,8 @@ Merge 'allow-{0}.txt' 'allow.txt'
 Copy-Item (Join-Path $Lists 'help-sites.txt') (Join-Path $Base 'help-sites.txt') -Force
 Copy-Item (Join-Path $PSScriptRoot 'engine.ps1') (Join-Path $Base 'engine.ps1') -Force
 Set-Content (Join-Path $Base 'countries.txt') ($Countries -join ',') -Encoding ASCII
+$strictFile = Join-Path $Base 'strict.txt'
+if ($Strict) { Set-Content $strictFile 'DNS4EU child protection: blocks gambling + adult sites' -Encoding ASCII } else { Remove-Item $strictFile -Force -ErrorAction SilentlyContinue }
 $bak = Join-Path $Base 'hosts.original'
 if (-not (Test-Path $bak)) { Copy-Item "$env:SystemRoot\System32\drivers\etc\hosts" $bak -Force }
 

@@ -60,8 +60,13 @@ class App(tk.Tk):
         for val, txt in (("android", "Android"), ("ios", "iPhone")):
             tk.Radiobutton(pf, text=txt, variable=self.phone, value=val, fg=FG, bg=CARD, selectcolor=BG,
                            activebackground=CARD, activeforeground=FG).pack(side="left", padx=(0, 12))
+        self.strict = tk.BooleanVar(value=False)
+        tk.Checkbutton(card, text="Strict PC mode: also block adult sites (DNS filter, catches new gambling sites faster)",
+                       variable=self.strict, fg="#aaa", bg=CARD, selectcolor=BG, activebackground=CARD,
+                       activeforeground=FG, font=("Segoe UI", 9), wraplength=520, justify="left").grid(
+            row=3, column=0, columnspan=2, sticky="w", pady=(8, 0))
         self.help = tk.Label(card, text="", fg="#9be39b", bg=CARD, justify="left", wraplength=540, font=("Segoe UI", 9))
-        self.help.grid(row=3, column=0, columnspan=2, sticky="w", pady=(10, 0))
+        self.help.grid(row=4, column=0, columnspan=2, sticky="w", pady=(10, 0))
         self.country.bind("<<ComboboxSelected>>", lambda e: self.show_help())
         self.show_help()
 
@@ -131,74 +136,50 @@ class App(tk.Tk):
                 self.destroy()
             return
         codes = self.codes()
+        strict = self.strict.get()
+        dns_line = ("• set Wi-Fi/Ethernet DNS to DNS4EU Child Protection - this ALSO blocks adult sites\n" if strict
+                    else "• block gambling only - nothing else is blocked\n")
         if not messagebox.askyesno(APP_NAME, (
                 "This will:\n\n"
-                "• add ~10,000-45,000 gambling sites to the hosts file\n"
-                "• set Wi-Fi/Ethernet DNS to DNS4EU Child Protection (blocks gambling + adult sites)\n"
-                "• stop Chrome/Edge/Brave/Firefox from bypassing it with their own Secure DNS\n"
+                "• add ~45,000 gambling sites to the hosts file\n" + dns_line +
+                "• stop Chrome/Edge/Brave/Firefox from skipping it with their own Secure DNS\n"
                 "• re-check every 30 minutes and repair itself\n\n"
                 "Banks and help sites keep working. Removing it takes a 72 hour waiting time.\n\nContinue?")):
             return
-        self.run_bg(lambda: (self.log(f"Protecting this PC for: {', '.join(codes)} ..."),
-                             self.ps("-Countries", ",".join(codes)) and self.log("✔ PC protected.")))
+        args = ["-Countries", ",".join(codes)] + (["-Strict"] if strict else [])
+        self.run_bg(lambda: (self.log(f"Protecting this PC for: {', '.join(codes)}" + (" (strict)" if strict else "") + " ..."),
+                             self.ps(*args) and self.log("✔ PC protected.")))
 
     def protect_phone(self):
         win = tk.Toplevel(self, bg=BG, padx=20, pady=16)
         win.title("Protect my phone")
         win.transient(self)
-        big = ("Segoe UI", 12, "bold")
-        txt = ("Segoe UI", 10)
-        if self.phone.get() == "ios":
-            prof = phones.ios_profile(Path.home() / "FuckGambling-DNS.mobileconfig")
-            url = phones.PROFILE_URL
-            tk.Label(win, text="iPhone - scan with the Camera app", fg=FG, bg=BG, font=big).pack(anchor="w")
-            tk.Label(win, text="Works on any Wi-Fi or mobile data. Open the link in Safari.",
-                     fg="#aaa", bg=BG, font=("Segoe UI", 9), wraplength=420, justify="left").pack(anchor="w")
-            self.draw_qr(win, url).pack(pady=10)
-            steps = "\n".join([
-                "1. Open the iPhone Camera, point it at the code, tap the yellow link (Safari)",
-                "2. 'Allow' the configuration profile download  >  Close",
-                "3. Settings  >  Profile Downloaded  >  Install (top right)  >  passcode  >  Install",
-                "4. Settings > General > VPN, DNS & Device Management > DNS: select FU#K!! G#MBLING",
-                "5. Settings > [your name] > iCloud > Private Relay: OFF",
-                "",
-                "Make it stick: let someone you trust set a Screen Time passcode and turn",
-                "'VPN & DNS' and 'Account Changes' to Don't Allow. (Guide: docs/IPHONE.md)",
-            ])
-            tk.Label(win, text=steps, fg=FG, bg=BG, font=txt, justify="left").pack(anchor="w")
-            tk.Label(win, text=f"No camera? Type in iPhone Safari:  {url}", fg="#888", bg=BG,
-                     font=("Consolas", 9)).pack(anchor="w", pady=(8, 0))
-            self.log("iPhone profile ready. Scan the QR code with your iPhone.")
-        else:
-            tk.Label(win, text="Android - scan with the phone camera (or Google Lens)", fg=FG, bg=BG, font=big).pack(anchor="w")
-            tk.Label(win, text="A page opens with a Copy button and the steps for your phone brand.",
-                     fg="#aaa", bg=BG, font=("Segoe UI", 9)).pack(anchor="w")
-            self.draw_qr(win, phones.ANDROID_URL, box=5).pack(pady=8)
-            tk.Label(win, text="Or do it by hand:", fg="#aaa", bg=BG, font=("Segoe UI", 9)).pack(anchor="w")
-            tk.Label(win, text="\n".join([
-                "1. Open Settings and search for  Private DNS",
-                "     (Samsung: Connections > More connection settings > Private DNS)",
-                "2. Choose  'Private DNS provider hostname'",
-                "3. Type exactly this and tap Save:",
-            ]), fg=FG, bg=BG, font=txt, justify="left").pack(anchor="w", pady=(8, 4))
-            row = tk.Frame(win, bg=BG)
-            row.pack(anchor="w")
-            e = tk.Entry(row, font=("Consolas", 16, "bold"), width=20, justify="center")
-            e.insert(0, phones.DOT_HOST)
-            e.config(state="readonly")
-            e.pack(side="left")
-            tk.Button(row, text="Copy", command=lambda: (self.clipboard_clear(),
-                                                        self.clipboard_append(phones.DOT_HOST))).pack(side="left", padx=6)
-            tk.Label(win, text="\n".join([
-                "4. Test: a betting site should no longer open. Your bank still works.",
-                "",
-                "Make it stick: Google Family Link or Digital Wellbeing can lock settings -",
-                "let someone you trust hold that password.",
-            ]), fg=FG, bg=BG, font=txt, justify="left").pack(anchor="w", pady=(8, 0))
-            tk.Label(win, text="Advanced: set it automatically over USB (needs USB debugging)", fg="#aaa", bg=BG,
-                     font=("Segoe UI", 9)).pack(anchor="w", pady=(14, 2))
+        ios = self.phone.get() == "ios"
+        url = phones.IPHONE_URL if ios else phones.ANDROID_URL
+        name = "iPhone" if ios else "Android"
+        cam = "the Camera app (open the link in Safari)" if ios else "the camera or Google Lens"
+        tk.Label(win, text=f"{name} - scan with {cam}", fg=FG, bg=BG, font=("Segoe UI", 12, "bold")).pack(anchor="w")
+        tk.Label(win, text="Works on any Wi-Fi or mobile data.", fg="#aaa", bg=BG, font=("Segoe UI", 9)).pack(anchor="w")
+        self.draw_qr(win, url, box=5).pack(pady=10)
+        tk.Label(win, fg=FG, bg=BG, font=("Segoe UI", 10), justify="left", text="\n".join([
+            "The page lets you choose:",
+            "",
+            "  A)  Gambling only  (recommended)",
+            "       free NextDNS account, about 3 minutes",
+            "",
+            "  B)  1 minute, no account",
+            "       blocks gambling AND adult sites",
+            "",
+            "Make it stick: let someone you trust hold the password / Screen Time code.",
+        ])).pack(anchor="w")
+        tk.Label(win, text=f"No camera? Open on the phone:  {url}", fg="#888", bg=BG,
+                 font=("Consolas", 9)).pack(anchor="w", pady=(10, 0))
+        if not ios:
+            tk.Label(win, text="Advanced: set option B automatically over USB (needs USB debugging)", fg="#aaa", bg=BG,
+                     font=("Segoe UI", 9)).pack(anchor="w", pady=(12, 2))
             tk.Button(win, text="Set it over USB",
                       command=lambda: self.run_bg(lambda: phones.android_protect(log=self.log))).pack(anchor="w")
+        self.log(f"{name}: scan the QR code with the phone.")
 
     def draw_qr(self, parent, data, box=6):
         import qrcode

@@ -1,7 +1,7 @@
 # iPhone: make it stick
 
 1. **Delete gambling apps.**
-2. **Install the profile:** app → *Protect my phone* → iPhone. On the phone: Settings → *Profile Downloaded* → Install.
+2. **Set up the filter:** open https://dengeninoglu.github.io/fuck-gambling/iphone/ in Safari (or scan the QR in the app) and choose **A) gambling only** (free NextDNS account) or **B) no account** (also blocks adult sites).
    Then Settings → General → VPN, DNS & Device Management → **DNS** → select *FU#K!! G#MBLING*.
    Test: a betting site should not open; your bank should.
 3. **Private Relay OFF:** Settings → [your name] → iCloud → Private Relay → Off (otherwise Safari can skip the filter).

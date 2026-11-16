@@ -35,8 +35,8 @@ Gambling companies spend billions to keep people playing. This costs nothing and
 
 | Button | What happens |
 |---|---|
-| **1 Protect this PC** | Blocks ~45,000 betting/casino sites, plus new ones as they appear. Works in **every browser**. Repairs itself every 30 minutes. |
-| **2 Protect my phone** | **iPhone:** scan the QR code with the Camera app, then tap *Install*. **Android:** scan the QR code, tap *Copy*, paste it into *Settings → Private DNS*. No cable needed. |
+| **1 Protect this PC** | Blocks ~45,000 betting/casino sites in **every browser**, and **nothing else**. Repairs itself every 30 minutes. Optional *strict mode* adds a DNS filter that catches brand-new gambling sites too (it also blocks adult sites). |
+| **2 Protect my phone** | Scan the QR code, and a page opens with two choices: **A) gambling only** (free NextDNS account, ~3 min) or **B) 1 minute, no account** (also blocks adult sites). iPhone and Android, no cable. |
 | **3 Erase gambling traces** | Deletes gambling history, searches, cookies, saved logins and suggestions from Chrome, Edge, Brave and Opera. Everything else stays. You see a list first. |
 
 <p align="center">
@@ -44,9 +44,7 @@ Gambling companies spend billions to keep people playing. This costs nothing and
 <img src="docs/img/android.png" width="380" alt="Android setup">
 </p>
 
-> 📱 **No computer? Set up your phone directly:**
-> **iPhone:** open [this link in Safari](https://dengeninoglu.github.io/fuck-gambling/FuckGambling.mobileconfig) → *Allow* → Settings → *Profile Downloaded* → *Install* → then Settings → General → VPN, DNS & Device Management → DNS → select *FU#K!! G#MBLING*.
-> **Android 9+:** open [this page](https://dengeninoglu.github.io/fuck-gambling/android/) on your phone. It has a Copy button and steps for your brand. Or go to Settings → *Private DNS* → *Private DNS provider hostname* → `child.joindns4.eu` → Save.
+> 📱 **No computer?** Open the setup page on your phone: **[iPhone](https://dengeninoglu.github.io/fuck-gambling/iphone/)** · **[Android](https://dengeninoglu.github.io/fuck-gambling/android/)**
 
 ### Step 3 · Make it stick (most important)
 A blocker buys you time. These steps make sure an urge can't undo it in a weak moment:
@@ -64,7 +62,8 @@ Banking apps, crypto exchanges, work, school, YouTube, social media and **help &
 **Can I turn it off?** Yes, on purpose slowly: *Remove protection* starts a **72-hour waiting time**. The urge passes long before that. You can cancel the request any time.
 **Does it break my phone?** No. It only changes the phone's standard *Private DNS* / DNS profile setting, and you can switch it back in Settings.
 **Does it track me?** No. There is no server, no account and no analytics. It runs on your device only.
-**Mac / TV / tablet / the whole house?** Set your router's DNS to `86.54.11.12` and `86.54.11.212` (instructions are usually under *Internet / DNS* in the router page).
+**Does it block porn or anything else?** No. By default only gambling is blocked. Only the *no-account* phone option and the optional *strict PC mode* use a public filter that also blocks adult sites. There is no free gambling-only filter that works without an account, so we tell you clearly before you choose.
+**Mac / TV / tablet / the whole house?** Gambling only: a free NextDNS account with the *Gambling* category, set on your router. No account: router DNS `86.54.11.12` / `86.54.11.212` (also blocks adult sites).
 **I already use Gamban / BetBlocker.** Fine. The app detects them and adds its block list on top without fighting them.
 
 ## Need help right now?
@@ -82,14 +81,14 @@ Banking apps, crypto exchanges, work, school, YouTube, social media and **help &
 <details>
 <summary><b>For techies: how it works, building, contributing</b></summary>
 
-- **PC (Windows 10/11):** `windows/engine.ps1` runs as a SYSTEM scheduled task (startup, logon, every 30 min). It writes [StevenBlack gambling-only](https://github.com/StevenBlack/hosts) hosts + country lists + numbered-mirror patterns into the hosts file, pins help sites to real IPs, sets adapter DNS to [DNS4EU](https://www.joindns4.eu/) *Protective + Child Protection* (with DoH), and locks Chrome/Edge/Brave/Firefox DoH via policy. Uninstall uses a 72 h cooldown file. Emergency removal: [docs/UNINSTALL.md](docs/UNINSTALL.md).
-- **Android:** Private DNS `child.joindns4.eu` (DoT). Optional USB/adb automation.
-- **iPhone:** `com.apple.dnsSettings.managed` profile served over local Wi-Fi via QR. Guide: [docs/IPHONE.md](docs/IPHONE.md).
+- **PC (Windows 10/11):** `windows/engine.ps1` runs as a SYSTEM scheduled task (startup, logon, every 30 min). It writes [StevenBlack gambling-only](https://github.com/StevenBlack/hosts) hosts + country lists + numbered-mirror patterns into the hosts file, pins help sites to real IPs, in *strict mode* sets adapter DNS to [DNS4EU](https://www.joindns4.eu/) *Protective + Child Protection* (with DoH; also blocks adult content), and locks Chrome/Edge/Brave/Firefox DoH via policy. Uninstall uses a 72 h cooldown file. Emergency removal: [docs/UNINSTALL.md](docs/UNINSTALL.md).
+- **Android:** Private DNS: the user's own NextDNS endpoint (gambling only) or `child.joindns4.eu` (DoT, gambling + adult). Optional USB/adb automation for the latter.
+- **iPhone:** NextDNS profile (apple.nextdns.io) or our `com.apple.dnsSettings.managed` DNS4EU profile on GitHub Pages, opened via QR. Guide: [docs/IPHONE.md](docs/IPHONE.md).
 - **Run from source:** Python 3.10+, `pip install qrcode`, then `START.bat` (or `python -m fg`).
 - **Build exe:** `pip install pyinstaller qrcode` then PyInstaller `--onefile --windowed --uac-admin` with `lists` and `windows` as data (see release notes).
 - **Add your country:** edit `lists/countries.json` (name + free helplines) and add `lists/<code>.txt` (gambling sites), `lists/allow-<code>.txt` (banks), `lists/mirrors-<code>.txt`. PRs welcome!
 
-**Known limits:** VPNs/Tor bypass DNS blocking. On phones the DNS filter also hides some recovery websites (phone helplines always work). A determined admin can remove anything on their own PC. That is why Step 3 matters.
+**Known limits:** VPNs/Tor bypass DNS blocking. NextDNS free = 300k lookups/month (after that it stops filtering until next month). The DNS4EU filter also hides some recovery websites (phone helplines always work). A determined admin can remove anything on their own PC. That is why Step 3 matters.
 
 </details>
 

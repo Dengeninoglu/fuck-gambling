@@ -22,6 +22,7 @@ DOH_URL = "https://child.joindns4.eu/dns-query"
 # Same profile, hosted publicly so the QR code works on any network (mobile data too).
 PROFILE_URL = "https://dengeninoglu.github.io/fuck-gambling/FuckGambling.mobileconfig"
 ANDROID_URL = "https://dengeninoglu.github.io/fuck-gambling/android/"
+IPHONE_URL = "https://dengeninoglu.github.io/fuck-gambling/iphone/"
 DNS_IPS = ["86.54.11.12", "86.54.11.212", "2a13:1001::86:54:11:12", "2a13:1001::86:54:11:212"]
 PLATFORM_TOOLS = "https://dl.google.com/android/repository/platform-tools-latest-windows.zip"
 TOOLS = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "FuckGambling" / "tools"

@@ -1,8 +1,9 @@
 # FU#K!! G#MBLING - Windows engine
 # Runs as SYSTEM from the scheduled task "FuckGambling" (at startup, logon, every 30 min).
 # - writes the gambling block list into the hosts file (between markers, other lines untouched)
-# - pins help/recovery sites to their real IPs (the DNS filter blocks some of them)
-# - sets Wi-Fi/Ethernet DNS to DNS4EU Child Protection (+ DoH), browsers cannot use their own DoH
+# - pins help/recovery sites to their real IPs (the strict DNS filter blocks some of them)
+# - strict mode only: sets Wi-Fi/Ethernet DNS to DNS4EU Child Protection (+ DoH; also blocks adult sites)
+# - browsers cannot use their own DoH (Secure DNS) to skip the hosts file
 # - re-applies everything if someone changes it; uninstall only after a 72 h cooldown request
 $ErrorActionPreference = 'Continue'
 $Base      = 'C:\ProgramData\FuckGambling'
@@ -108,27 +109,36 @@ try {
   if (($lines -join "`n") -cne ($out -join "`n")) { Write-Hosts $out; Log ("hosts updated: {0} blocked, {1} help pins." -f $final.Count, $pins.Count) }
 } catch { Log ('hosts write failed: ' + $_.Exception.Message) }
 
-# ---- 2) system DNS ----
+# ---- 2) system DNS (only in strict mode) ----
+# Default = gambling only: the hosts list above. Strict mode (strict.txt) also sets the DNS4EU
+# Child Protection filter, which catches brand-new gambling sites but ALSO blocks adult sites.
+$Strict = Test-Path (Join-Path $Base 'strict.txt')
 # Another blocker (Gamban, BetBlocker, ...) that manages DNS itself would fight us every 30 min.
-# In that case the hosts layer above stays on and DNS/browser settings are left to that blocker.
 $other = Get-Service -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq 'Running' -and $_.Name -match '^(Gamban|BetBlocker|GamBlock|BetFilter)' } | Select-Object -First 1
-if ($other) {
-  Log ("{0} is running and manages DNS - keeping hosts protection only." -f $other.Name)
-  Clear-DnsClientCache
-  return
-}
-foreach ($ip in $Dns4 + $Dns6) {
-  try {
-    if (Get-DnsClientDohServerAddress -ServerAddress $ip -ErrorAction SilentlyContinue) {
-      Set-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $DohUrl -AllowFallbackToUdp $true -AutoUpgrade $true -ErrorAction Stop | Out-Null
-    } else { Add-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $DohUrl -AllowFallbackToUdp $true -AutoUpgrade $true -ErrorAction Stop | Out-Null }
-  } catch { Log ("DoH template failed ($ip): " + $_.Exception.Message) }
-}
-foreach ($a in Get-Adapters) {
-  $cur = (Get-DnsClientServerAddress -InterfaceIndex $a.ifIndex -AddressFamily IPv4).ServerAddresses
-  if (($cur -join ',') -ne ($Dns4 -join ',')) {
-    try { Set-DnsClientServerAddress -InterfaceIndex $a.ifIndex -ServerAddresses ($Dns4 + $Dns6) -ErrorAction Stop; Log ("DNS set on {0} (was {1})" -f $a.Name, ($cur -join ',')) }
-    catch { Log ("DNS failed on {0}: {1}" -f $a.Name, $_.Exception.Message) }
+if ($other -and $Strict) { Log ("{0} is running and manages DNS - strict DNS skipped, hosts protection stays on." -f $other.Name) }
+if (-not $Strict) {
+  # switching back from strict mode: give adapters their normal (DHCP) DNS again
+  foreach ($a in Get-Adapters) {
+    $cur = (Get-DnsClientServerAddress -InterfaceIndex $a.ifIndex -AddressFamily IPv4).ServerAddresses
+    if (($cur -join ',') -eq ($Dns4 -join ',')) {
+      Set-DnsClientServerAddress -InterfaceIndex $a.ifIndex -ResetServerAddresses -ErrorAction SilentlyContinue
+      Log ("Gambling-only mode: DNS filter removed from {0}." -f $a.Name)
+    }
+  }
+} elseif (-not $other) {
+  foreach ($ip in $Dns4 + $Dns6) {
+    try {
+      if (Get-DnsClientDohServerAddress -ServerAddress $ip -ErrorAction SilentlyContinue) {
+        Set-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $DohUrl -AllowFallbackToUdp $true -AutoUpgrade $true -ErrorAction Stop | Out-Null
+      } else { Add-DnsClientDohServerAddress -ServerAddress $ip -DohTemplate $DohUrl -AllowFallbackToUdp $true -AutoUpgrade $true -ErrorAction Stop | Out-Null }
+    } catch { Log ("DoH template failed ($ip): " + $_.Exception.Message) }
+  }
+  foreach ($a in Get-Adapters) {
+    $cur = (Get-DnsClientServerAddress -InterfaceIndex $a.ifIndex -AddressFamily IPv4).ServerAddresses
+    if (($cur -join ',') -ne ($Dns4 -join ',')) {
+      try { Set-DnsClientServerAddress -InterfaceIndex $a.ifIndex -ServerAddresses ($Dns4 + $Dns6) -ErrorAction Stop; Log ("DNS set on {0} (was {1})" -f $a.Name, ($cur -join ',')) }
+      catch { Log ("DNS failed on {0}: {1}" -f $a.Name, $_.Exception.Message) }
+    }
   }
 }
 
