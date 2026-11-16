@@ -3,3 +3,4 @@ __pycache__/
 *.mobileconfig
 dist/
 build/
+!docs/FuckGambling.mobileconfig
