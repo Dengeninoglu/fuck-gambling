@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="300" viewBox="0 0 960 300" role="img" aria-label="FU#K!! G#MBLING – only gambling is blocked. Free forever.">
+  <style>
+    .bg { fill: #111214; }
+    .title { font: 900 64px 'Segoe UI Black', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; fill: #e5484d; letter-spacing: 2px; }
+    .site { font: 600 22px ui-monospace, 'Cascadia Mono', Consolas, 'Courier New', monospace; fill: #8b8b94; }
+    .tag { font: 600 21px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; fill: #f2f2f2; }
+    .ok { font: 600 17px 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; fill: #8be09b; }
+    .strike { stroke: #e5484d; stroke-width: 4; stroke-linecap: round; }
+
+    .in { opacity: 0; animation: rise 700ms cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    .s { transform-box: fill-box; transform-origin: left center; transform: scaleX(0);
+         animation: cross 450ms cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+    .sa { opacity: 0; animation: rise 700ms cubic-bezier(0.23, 1, 0.32, 1) forwards, dim 450ms cubic-bezier(0.23, 1, 0.32, 1) forwards; }
+
+    @keyframes rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes cross { to { transform: scaleX(1); } }
+    @keyframes dim { to { fill: #4a4a52; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .in { animation: fade 300ms ease forwards; }
+      .s { transform: none; animation: none; }
+      .sa { animation: fade 300ms ease forwards; fill: #4a4a52; }
+      @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+    }
+  </style>
+
+  <rect class="bg" width="960" height="300" rx="18"/>
+
+  <text class="title in" x="480" y="104" text-anchor="middle" style="animation-delay:100ms">FU#K!! G#MBLING</text>
+
+  <!-- betting sites get crossed out one by one -->
+  <g>
+    <text class="site sa" x="118" y="168" style="animation-delay:500ms, 1150ms">bet365</text>
+    <line class="strike s" x1="112" y1="161" x2="214" y2="161" style="animation-delay:1150ms"/>
+
+    <text class="site sa" x="262" y="168" style="animation-delay:560ms, 1350ms">betway</text>
+    <line class="strike s" x1="256" y1="161" x2="358" y2="161" style="animation-delay:1350ms"/>
+
+    <text class="site sa" x="406" y="168" style="animation-delay:620ms, 1550ms">hollywoodbets</text>
+    <line class="strike s" x1="400" y1="161" x2="586" y2="161" style="animation-delay:1550ms"/>
+
+    <text class="site sa" x="634" y="168" style="animation-delay:680ms, 1750ms">1xbet</text>
+    <line class="strike s" x1="628" y1="161" x2="706" y2="161" style="animation-delay:1750ms"/>
+
+    <text class="site sa" x="754" y="168" style="animation-delay:740ms, 1950ms">nesine</text>
+    <line class="strike s" x1="748" y1="161" x2="844" y2="161" style="animation-delay:1950ms"/>
+  </g>
+
+  <text class="tag in" x="480" y="226" text-anchor="middle" style="animation-delay:2300ms">Only gambling is blocked. Free forever. Non-profit.</text>
+  <text class="ok in" x="480" y="262" text-anchor="middle" style="animation-delay:2500ms">✔ your bank   ✔ your crypto   ✔ your life   ·   Windows · Android · iPhone</text>
+</svg>

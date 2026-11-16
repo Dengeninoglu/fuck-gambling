@@ -1,9 +1,12 @@
-<p align="center"><img src="docs/img/icon.png" width="96" alt=""></p>
+<p align="center"><img src="docs/img/hero.svg" width="100%" alt="FU#K!! G#MBLING: only gambling is blocked. Free forever. Non-profit."></p>
 
-<h1 align="center">FU#K!! G#MBLING</h1>
-
-<p align="center"><b>Block every betting and casino site on your computer and your phone.<br>
-Only gambling. Free forever. Non-profit. No ads. No tracking.</b></p>
+<p align="center">
+  <a href="https://github.com/Dengeninoglu/fuck-gambling/releases/latest"><img alt="Latest release" src="https://img.shields.io/github/v/release/Dengeninoglu/fuck-gambling?style=flat-square&color=e5484d&label=version"></a>
+  <a href="https://github.com/Dengeninoglu/fuck-gambling/releases"><img alt="Downloads" src="https://img.shields.io/github/downloads/Dengeninoglu/fuck-gambling/total?style=flat-square&color=2f9e44"></a>
+  <img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-blue?style=flat-square">
+  <img alt="Non-profit" src="https://img.shields.io/badge/non--profit-free%20forever-8be09b?style=flat-square">
+  <img alt="Platforms" src="https://img.shields.io/badge/Windows%20·%20Android%20·%20iPhone-555?style=flat-square">
+</p>
 
 <p align="center">
   <a href="https://github.com/Dengeninoglu/fuck-gambling/releases/latest/download/FuckGambling.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/DOWNLOAD-Windows%2010%20%2F%2011-e5484d?style=for-the-badge&logo=windows&logoColor=white"></a>
@@ -11,7 +14,7 @@ Only gambling. Free forever. Non-profit. No ads. No tracking.</b></p>
   <a href="https://dengeninoglu.github.io/fuck-gambling/a/"><img alt="Phone only" src="https://img.shields.io/badge/NO%20COMPUTER%3F-Set%20up%20your%20phone-2f9e44?style=for-the-badge&logo=android&logoColor=white"></a>
 </p>
 
-<p align="center"><a href="MANIFESTO.md">Manifesto</a> · <a href="MANIFESTO.tr.md">Manifesto (Türkçe)</a> · <a href="#-need-help-right-now">Helplines</a></p>
+<p align="center"><a href="https://dengeninoglu.github.io/fuck-gambling/"><b>🌐 Website</b></a> · <a href="MANIFESTO.md">Manifesto</a> · <a href="MANIFESTO.tr.md">Manifesto (Türkçe)</a> · <a href="#-need-help-right-now">Helplines</a></p>
 
 ---
 
@@ -41,7 +44,7 @@ Click the red **DOWNLOAD** button. Open **FuckGambling.exe**, and when Windows a
 
 Pick **your country** (it shows your local helpline) and **your phone** (Android or iPhone).
 
-<p align="center"><img src="docs/img/main.png" width="460" alt="Main window"></p>
+<p align="center"><img src="docs/img/demo.gif" width="620" alt="Demo: pick your country, choose A or B, the app sets it up and tests it, scan the QR code"></p>
 
 ### 2 · Press the three buttons
 

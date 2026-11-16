@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FU#K!! G#MBLING – free gambling blocker</title>
+<meta name="description" content="Block every betting and casino site on your computer and phone. Only gambling. Free forever. Non-profit. Open source.">
+<meta property="og:title" content="FU#K!! G#MBLING – free gambling blocker">
+<meta property="og:description" content="Only gambling is blocked. Free forever. Non-profit. Windows, Android, iPhone.">
+<link rel="icon" href="img/icon.png">
+<style>
+  :root {
+    --red:#e5484d; --red-d:#c13b40; --bg:#111214; --card:#1c1d21; --line:#2c2d33;
+    --fg:#f2f2f2; --muted:#a0a0a8; --green:#8be09b;
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  * { box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  a { color:#7cc4ff; }
+  .wrap { max-width:1040px; margin:0 auto; padding:0 20px; }
+
+  /* ---------- hero ---------- */
+  .hero { text-align:center; padding:72px 0 40px; }
+  .hero h1 { font:900 clamp(40px, 9vw, 84px)/1.05 "Segoe UI Black","Segoe UI",system-ui,sans-serif; color:var(--red); margin:0; letter-spacing:1px; }
+  .hero .lead { font-size:clamp(18px, 2.6vw, 22px); color:var(--fg); margin:18px auto 6px; max-width:720px; }
+  .sites { display:flex; flex-wrap:wrap; justify-content:center; gap:10px 26px; margin:28px 0 8px; font:600 18px ui-monospace,Consolas,monospace; color:#8b8b94; }
+  .site { position:relative; }
+  .site::after { content:""; position:absolute; left:-4px; right:-4px; top:52%; height:3px; border-radius:2px; background:var(--red);
+                 transform:scaleX(0); transform-origin:left center; }
+  .ok { color:var(--green); font-weight:600; margin:18px 0 0; }
+  .cta { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:32px 0 6px; }
+  .btn { display:inline-block; padding:15px 24px; border-radius:12px; font-weight:700; font-size:17px; text-decoration:none; color:#fff; background:var(--red);
+         transition:transform 160ms var(--ease-out), background-color 160ms ease; }
+  .btn.alt { background:#2c2d33; }
+  .btn:active { transform:scale(0.97); }
+  .small { color:var(--muted); font-size:14px; }
+
+  /* hero entrance: stagger, played once on load */
+  .enter { opacity:0; animation:rise 700ms var(--ease-out) forwards; }
+  .hero h1.enter { animation-delay:80ms; }
+  .hero .lead.enter { animation-delay:200ms; }
+  .site.enter { animation:rise 600ms var(--ease-out) forwards, dim 400ms var(--ease-out) forwards; }
+  .site:nth-child(1) { animation-delay:300ms, 1000ms; } .site:nth-child(1)::after { animation:cross 420ms var(--ease-out) 1000ms forwards; }
+  .site:nth-child(2) { animation-delay:350ms, 1180ms; } .site:nth-child(2)::after { animation:cross 420ms var(--ease-out) 1180ms forwards; }
+  .site:nth-child(3) { animation-delay:400ms, 1360ms; } .site:nth-child(3)::after { animation:cross 420ms var(--ease-out) 1360ms forwards; }
+  .site:nth-child(4) { animation-delay:450ms, 1540ms; } .site:nth-child(4)::after { animation:cross 420ms var(--ease-out) 1540ms forwards; }
+  .site:nth-child(5) { animation-delay:500ms, 1720ms; } .site:nth-child(5)::after { animation:cross 420ms var(--ease-out) 1720ms forwards; }
+  .site:nth-child(6) { animation-delay:550ms, 1900ms; } .site:nth-child(6)::after { animation:cross 420ms var(--ease-out) 1900ms forwards; }
+  .ok.enter { animation-delay:2150ms; }
+  .cta.enter { animation-delay:2300ms; }
+  @keyframes rise { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:none; } }
+  @keyframes cross { to { transform:scaleX(1); } }
+  @keyframes dim { to { color:#4a4a52; } }
+
+  /* ---------- sections ---------- */
+  section { padding:56px 0; border-top:1px solid var(--line); }
+  h2 { font-size:clamp(26px, 4vw, 34px); margin:0 0 18px; }
+  .quote { font-size:clamp(20px, 3vw, 26px); font-weight:700; border-left:4px solid var(--red); padding:4px 0 4px 18px; margin:0 0 22px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:16px; }
+  .card { background:var(--card); border-radius:16px; padding:20px; }
+  .card h3 { margin:0 0 6px; font-size:19px; }
+  .card p { margin:0; color:var(--muted); }
+  .num { display:inline-grid; place-items:center; width:34px; height:34px; border-radius:50%; background:var(--red); color:#fff; font-weight:800; margin-bottom:10px; }
+  .shot { width:100%; border-radius:14px; display:block; }
+  table { width:100%; border-collapse:collapse; background:var(--card); border-radius:16px; overflow:hidden; }
+  th, td { text-align:left; padding:14px 16px; border-bottom:1px solid var(--line); vertical-align:top; }
+  th { background:#232429; }
+  tr:last-child td { border-bottom:0; }
+  .tag { display:inline-block; font-size:13px; font-weight:700; padding:2px 8px; border-radius:999px; }
+  .tag.g { background:#1f3d27; color:var(--green); } .tag.y { background:#3d331f; color:#f0c96b; }
+  .help { border:1px solid #2f9e44; }
+  .help b { white-space:nowrap; }
+  footer { padding:40px 0 60px; text-align:center; color:var(--muted); font-size:14px; border-top:1px solid var(--line); }
+
+  /* scroll reveal: only when JS is on, so content never stays hidden */
+  .js .reveal { opacity:0; transform:translateY(16px); transition:opacity 600ms var(--ease-out), transform 600ms var(--ease-out); }
+  .js .reveal.seen { opacity:1; transform:none; }
+  .js .grid .reveal:nth-child(2) { transition-delay:60ms; }
+  .js .grid .reveal:nth-child(3) { transition-delay:120ms; }
+
+  @media (hover:hover) and (pointer:fine) {
+    .btn:hover { transform:translateY(-2px); background:var(--red-d); }
+    .btn.alt:hover { background:#383a41; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior:auto; }
+    .enter, .site.enter { animation:fade 300ms ease forwards; }
+    .site { color:#4a4a52; }
+    .site::after { transform:none; animation:none !important; }
+    .js .reveal { transform:none; transition:opacity 300ms ease; }
+    .btn, .btn:hover, .btn:active { transform:none; }
+    @keyframes fade { from { opacity:0; } to { opacity:1; } }
+  }
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js');</script>
+
+<header class="hero wrap">
+  <h1 class="enter">FU#K!! G#MBLING</h1>
+  <p class="lead enter">Block every betting &amp; casino site on your computer and your phone.<br><b>Only gambling. Free forever. Non-profit.</b></p>
+  <div class="sites" aria-label="Examples of blocked sites">
+    <span class="site enter">bet365</span><span class="site enter">betway</span><span class="site enter">hollywoodbets</span>
+    <span class="site enter">1xbet</span><span class="site enter">stake</span><span class="site enter">nesine</span>
+  </div>
+  <p class="ok enter">✔ your bank &nbsp; ✔ your crypto &nbsp; ✔ your life</p>
+  <div class="cta enter">
+    <a class="btn" href="https://github.com/Dengeninoglu/fuck-gambling/releases/latest/download/FuckGambling.exe">Download for Windows</a>
+    <a class="btn alt" href="a/">Set up my phone</a>
+  </div>
+  <p class="small enter" style="animation-delay:2400ms">Windows 10/11 · Android · iPhone · <a href="https://github.com/Dengeninoglu/fuck-gambling">Open source on GitHub</a></p>
+</header>
+
+<main class="wrap">
+  <section id="why">
+    <h2 class="reveal">Why we built this</h2>
+    <p class="quote reveal">This app was built within a few hours of realising how much money I had spent on gambling.</p>
+    <p class="reveal">Betting companies have teams of engineers and psychologists whose only job is to keep you playing: bonuses, "free bets", notifications at 2 a.m., a new mirror site the day the old one gets blocked. The blockers that exist are either paid, or so strict that they block your bank and half the internet, so people switch them off.</p>
+    <div class="grid">
+      <div class="card reveal"><h3>Free, forever</h3><p>The people who need a blocker most are often the ones who just lost their money.</p></div>
+      <div class="card reveal"><h3>Only gambling</h3><p>Your bank, your crypto, your work and your adult life are none of our business.</p></div>
+      <div class="card reveal"><h3>Built for the worst moment</h3><p>Easy to set up on a good day, hard to undo on a bad night. Removal takes 72 hours.</p></div>
+    </div>
+  </section>
+
+  <section id="how">
+    <h2 class="reveal">How it works · about 5 minutes</h2>
+    <div class="grid">
+      <div class="card reveal"><span class="num">1</span><h3>Protect this PC</h3><p>~45,000 betting &amp; casino sites blocked in every browser. Repairs itself every 30 minutes.</p></div>
+      <div class="card reveal"><span class="num">2</span><h3>Protect my phone</h3><p>Scan a QR code. The app sets the filter up for you and <b>tests that it really blocks</b> before it shows the code.</p></div>
+      <div class="card reveal"><span class="num">3</span><h3>Erase the traces</h3><p>Betting history, searches, cookies and saved logins are removed from your browser, and nothing else.</p></div>
+    </div>
+    <p class="reveal" style="margin-top:22px"><img class="shot" src="img/demo.gif" alt="The app: pick your country, set up your phone, scan the QR code" loading="lazy" width="760" height="640"></p>
+  </section>
+
+  <section id="phone">
+    <h2 class="reveal">Phone: A or B?</h2>
+    <div class="reveal">
+      <table>
+        <tr><th></th><th><span class="tag g">A · recommended</span><br>Gambling only</th><th><span class="tag y">B</span><br>1 minute, no account</th></tr>
+        <tr><td>Blocks</td><td>Betting &amp; casino sites <b>only</b></td><td>Betting, casino <b>and adult sites</b></td></tr>
+        <tr><td>Needs</td><td>A free NextDNS account. The app sets it up for you.</td><td>Nothing</td></tr>
+        <tr><td>Stops VPN tricks</td><td>Yes</td><td>No</td></tr>
+      </table>
+    </div>
+    <p class="reveal small" style="margin-top:12px">No computer? <a href="a/">A: gambling only</a> · B for <a href="FuckGambling.mobileconfig">iPhone</a> / <a href="android/#b">Android</a></p>
+  </section>
+
+  <section id="stick">
+    <h2 class="reveal">Make it stick</h2>
+    <div class="grid">
+      <div class="card reveal"><h3>🔑 Give the keys away</h3><p>Let someone you trust hold your NextDNS password and Screen Time code.</p></div>
+      <div class="card reveal"><h3>🏦 Ask your bank</h3><p>Most banks can block gambling payments on your card. Switch it on.</p></div>
+      <div class="card reveal"><h3>📞 Talk to someone</h3><p>A blocker buys time. People are what heal. You're not alone.</p></div>
+    </div>
+  </section>
+
+  <section id="help">
+    <h2 class="reveal">Need help right now?</h2>
+    <div class="card help reveal">
+      <p style="margin:0;color:var(--fg)">🇿🇦 South Africa <b>0800 006 008</b> · 🇬🇧 UK <b>0808 8020 133</b> · 🇺🇸 USA <b>1-800-GAMBLER</b> · 🇦🇺 Australia <b>1800 858 858</b> · 🇹🇷 Türkiye <b>115</b><br>
+      🌍 Anywhere: <a href="https://www.gamblingtherapy.org">gamblingtherapy.org</a> · <a href="https://www.gamblersanonymous.org">Gamblers Anonymous</a></p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    Non-profit · open source (MIT) · no ads · no tracking<br>
+    <a href="https://github.com/Dengeninoglu/fuck-gambling">GitHub</a> · <a href="https://github.com/Dengeninoglu/fuck-gambling/blob/main/MANIFESTO.md">Manifesto</a> · <a href="https://github.com/Dengeninoglu/fuck-gambling/blob/main/MANIFESTO.tr.md">Manifesto (Türkçe)</a> · <a href="https://github.com/Dengeninoglu/fuck-gambling/issues">Report a bug</a>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var els = document.querySelectorAll('.reveal');
+    if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('seen'); }); return; }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('seen'); io.unobserve(en.target); } });
+    }, { rootMargin: '0px 0px -10% 0px' });
+    els.forEach(function (e) { io.observe(e); });
+  })();
+</script>
+</body>
+</html>
