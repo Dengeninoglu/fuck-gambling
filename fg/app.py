@@ -1,5 +1,8 @@
 """FU#K!! G#MBLING - simple GUI."""
 import ctypes
+import os
+import re
+import webbrowser
 import subprocess
 import sys
 import threading
@@ -150,36 +153,112 @@ class App(tk.Tk):
         self.run_bg(lambda: (self.log(f"Protecting this PC for: {', '.join(codes)}" + (" (strict)" if strict else "") + " ..."),
                              self.ps(*args) and self.log("✔ PC protected.")))
 
+    # ---------- phone ----------
+    def _id_file(self):
+        return Path(os.environ.get("LOCALAPPDATA", Path.home())) / "FuckGambling" / "nextdns-id.txt"
+
+    def _saved_id(self):
+        try:
+            v = self._id_file().read_text(encoding="utf-8").strip().lower()
+            return v if re.fullmatch(r"[0-9a-f]{6}", v) else ""
+        except OSError:
+            return ""
+
     def protect_phone(self):
         win = tk.Toplevel(self, bg=BG, padx=20, pady=16)
         win.title("Protect my phone")
         win.transient(self)
         ios = self.phone.get() == "ios"
-        url = phones.IPHONE_URL if ios else phones.ANDROID_URL
         name = "iPhone" if ios else "Android"
-        cam = "the Camera app (open the link in Safari)" if ios else "the camera or Google Lens"
-        tk.Label(win, text=f"{name} - scan with {cam}", fg=FG, bg=BG, font=("Segoe UI", 12, "bold")).pack(anchor="w")
-        tk.Label(win, text="Works on any Wi-Fi or mobile data.", fg="#aaa", bg=BG, font=("Segoe UI", 9)).pack(anchor="w")
-        self.draw_qr(win, url, box=5).pack(pady=10)
-        tk.Label(win, fg=FG, bg=BG, font=("Segoe UI", 10), justify="left", text="\n".join([
-            "The page lets you choose:",
-            "",
-            "  A)  Gambling only  (recommended)",
-            "       free NextDNS account, about 3 minutes",
-            "",
-            "  B)  1 minute, no account",
-            "       blocks gambling AND adult sites",
-            "",
-            "Make it stick: let someone you trust hold the password / Screen Time code.",
-        ])).pack(anchor="w")
-        tk.Label(win, text=f"No camera? Open on the phone:  {url}", fg="#888", bg=BG,
-                 font=("Consolas", 9)).pack(anchor="w", pady=(10, 0))
-        if not ios:
-            tk.Label(win, text="Advanced: set option B automatically over USB (needs USB debugging)", fg="#aaa", bg=BG,
-                     font=("Segoe UI", 9)).pack(anchor="w", pady=(12, 2))
-            tk.Button(win, text="Set it over USB",
-                      command=lambda: self.run_bg(lambda: phones.android_protect(log=self.log))).pack(anchor="w")
-        self.log(f"{name}: scan the QR code with the phone.")
+        mode = tk.StringVar(value="A")
+        tk.Label(win, text=f"Protect your {name} - choose one:", fg=FG, bg=BG,
+                 font=("Segoe UI", 12, "bold")).pack(anchor="w")
+        row = tk.Frame(win, bg=BG)
+        row.pack(fill="x", pady=(8, 4))
+        body = tk.Frame(win, bg=BG)
+        body.pack(fill="both", expand=True)
+
+        def option(val, title, sub):
+            return tk.Radiobutton(row, text=f"{title}\n{sub}", variable=mode, value=val, indicatoron=0,
+                                  command=lambda: render(), bg=CARD, fg=FG, selectcolor=RED, activebackground=CARD,
+                                  activeforeground=FG, relief="flat", bd=0, padx=10, pady=8, width=26,
+                                  font=("Segoe UI", 10, "bold"), cursor="hand2")
+        option("A", "A  Gambling only", "free NextDNS account · 3 min").pack(side="left", padx=(0, 6), fill="x", expand=True)
+        option("B", "B  No account · 1 min", "also blocks adult sites").pack(side="left", fill="x", expand=True)
+
+        def label(text, color=FG, size=10, bold=False, pady=0):
+            tk.Label(body, text=text, fg=color, bg=BG, justify="left", wraplength=520,
+                     font=("Segoe UI", size, "bold" if bold else "normal")).pack(anchor="w", pady=pady)
+
+        def show_qr(url, steps):
+            label(f"Scan with the {name} camera" + (" and open the link in Safari" if ios else " (or Google Lens)"), bold=True, pady=(10, 0))
+            self.draw_qr(body, url, box=5).pack(pady=8)
+            label("\n".join(steps))
+            tk.Label(body, text=f"No camera? Open on the phone:  {url}", fg="#888", bg=BG, font=("Consolas", 8),
+                     wraplength=540, justify="left").pack(anchor="w", pady=(8, 0))
+
+        def render():
+            for c in body.winfo_children():
+                c.destroy()
+            if mode.get() == "B":
+                label("Uses the free public DNS4EU filter. Blocks gambling AND adult sites. No account needed.", "#f0c96b", 9)
+                if ios:
+                    show_qr(phones.PROFILE_URL, [
+                        "1. Tap Allow  >  Close",
+                        "2. Settings  >  Profile Downloaded  >  Install  >  passcode  >  Install",
+                        "3. Settings > General > VPN, DNS & Device Management > DNS > FU#K!! G#MBLING",
+                    ])
+                else:
+                    show_qr(phones.ANDROID_URL + "#b", [
+                        "1. Tap Copy on the page",
+                        "2. Settings > Private DNS > Private DNS provider hostname > Paste > Save",
+                    ])
+                    tk.Button(body, text="Or set it automatically over USB (needs USB debugging)",
+                              command=lambda: self.run_bg(lambda: phones.android_protect(log=self.log))).pack(anchor="w", pady=(10, 0))
+                return
+            nid = self._saved_id()
+            if nid:
+                label(f"Your NextDNS ID: {nid}   (only gambling is blocked)", "#8be09b", 9)
+                show_qr(f"{phones.GAMBLING_ONLY_URL}?id={nid}&p={'iphone' if ios else 'android'}",
+                        ["1. Tap Install profile  >  Allow  >  Close",
+                         "2. Settings  >  Profile Downloaded  >  Install",
+                         "3. Settings > General > VPN, DNS & Device Management > DNS > FU#K!! G#MBLING"] if ios else
+                        ["1. Tap Copy on the page",
+                         "2. Settings > Private DNS > Private DNS provider hostname > Paste > Save"])
+                tk.Button(body, text="Use a different NextDNS ID", command=lambda: (self._id_file().unlink(missing_ok=True), render())).pack(anchor="w", pady=(10, 0))
+                return
+            label("Do this part here on the computer (3 minutes), then scan one QR code with the phone.", "#aaa", 9, pady=(4, 6))
+            label("Step 1", bold=True)
+            tk.Button(body, text="Open NextDNS sign-up (free)", bg=RED, fg="white", relief="flat", font=("Segoe UI", 10, "bold"),
+                      cursor="hand2", command=lambda: webbrowser.open("https://my.nextdns.io/signup")).pack(anchor="w", pady=(2, 8))
+            label("Step 2", bold=True)
+            label("In NextDNS: Parental Control tab  >  Categories  >  Add a category  >  Gambling", pady=(0, 8))
+            label("Step 3", bold=True)
+            label("Setup tab  >  copy your ID (6 characters) and paste it here:")
+            r = tk.Frame(body, bg=BG)
+            r.pack(anchor="w", pady=4)
+            e = tk.Entry(r, font=("Consolas", 16, "bold"), width=10, justify="center")
+            e.pack(side="left")
+            err = tk.Label(body, text="", fg=RED, bg=BG, font=("Segoe UI", 9))
+
+            def save():
+                v = e.get().strip().lower()
+                m = re.search(r"[0-9a-f]{6}", v)
+                if not m:
+                    err.config(text="That doesn't look like a NextDNS ID (6 characters like abc123).")
+                    err.pack(anchor="w")
+                    return
+                f = self._id_file()
+                f.parent.mkdir(parents=True, exist_ok=True)
+                f.write_text(m.group(0), encoding="utf-8")
+                self.log(f"NextDNS ID saved: {m.group(0)}")
+                render()
+            tk.Button(r, text="Show my QR code", command=save, bg=RED, fg="white", relief="flat",
+                      font=("Segoe UI", 10, "bold"), cursor="hand2").pack(side="left", padx=8)
+            e.bind("<Return>", lambda ev: save())
+            e.focus_set()
+
+        render()
 
     def draw_qr(self, parent, data, box=6):
         import qrcode

@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FU#K!! G#MBLING – gambling only</title>
+<link rel="stylesheet" href="../style.css">
+<style>
+  input { width:100%; font:700 22px ui-monospace,Consolas,monospace; padding:12px; border-radius:10px; border:0; text-align:center; text-transform:lowercase; }
+  .hide { display:none; }
+  .big { font-size:19px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>FU#K!! G#MBLING</h1>
+  <p class="sub"><span class="tag g">gambling only</span><br>Your personal setup. Only betting &amp; casino sites are blocked.</p>
+  <div class="tabs"><a id="tA" href="#">Android</a><a id="tI" href="#">iPhone</a></div>
+
+  <!-- no ID yet -->
+  <div class="card hide" id="noid">
+    <h2>First: your free NextDNS ID</h2>
+    <ol>
+      <li>Create a free account: <a href="https://my.nextdns.io/signup" rel="noopener">my.nextdns.io/signup</a></li>
+      <li><b>Parental Control</b> tab → <b>Categories</b> → <b>Add a category</b> → <b>Gambling</b></li>
+      <li><b>Setup</b> tab → copy your <b>ID</b> (6 characters) and paste it here:</li>
+    </ol>
+    <input id="idin" maxlength="6" placeholder="abc123" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <button id="go">Continue</button>
+    <p class="muted">Easier on a computer: the FU#K!! G#MBLING app does this for you and shows a QR code.</p>
+  </div>
+
+  <!-- Android -->
+  <div class="card hide" id="android">
+    <h2><span class="n">1</span>Copy</h2>
+    <div class="host" id="host"></div>
+    <button id="copy">Copy</button>
+    <h2 style="margin-top:16px"><span class="n">2</span>Paste into Private DNS</h2>
+    <p style="margin:0">Phone <b>Settings</b> → search <b>Private DNS</b> → <b>Private DNS provider hostname</b> → long-press → <b>Paste</b> → <b>Save</b>. Done.</p>
+    <details><summary>Can't find Private DNS?</summary><ol>
+      <li><b>Samsung:</b> Settings → Connections → More connection settings → Private DNS</li>
+      <li><b>Pixel / Motorola / Nokia:</b> Settings → Network &amp; internet → Private DNS</li>
+      <li><b>Xiaomi / Redmi / POCO:</b> Settings → Connection &amp; sharing → Private DNS</li>
+      <li><b>Huawei / Honor:</b> Settings → Mobile network → Private DNS / Encrypted DNS</li>
+      <li><b>Oppo / Realme / OnePlus:</b> Settings → Connection &amp; sharing → Private DNS</li>
+    </ol></details>
+  </div>
+
+  <!-- iPhone -->
+  <div class="card hide" id="iphone">
+    <h2><span class="n">1</span>Install</h2>
+    <a class="btn" id="dl" download="FuckGambling-gambling-only.mobileconfig">Install profile</a>
+    <p class="muted" style="margin:6px 0 0">Open this page in <b>Safari</b>. Tap <b>Allow</b> → <b>Close</b>.</p>
+    <h2 style="margin-top:16px"><span class="n">2</span>Turn it on</h2>
+    <ol>
+      <li><b>Settings</b> → <b>Profile Downloaded</b> → <b>Install</b> → passcode → <b>Install</b></li>
+      <li>Settings → General → VPN, DNS &amp; Device Management → <b>DNS</b> → select <b>FU#K!! G#MBLING</b></li>
+    </ol>
+    <details><summary>The Install button doesn't work?</summary><ol>
+      <li>Install the free <a href="https://apps.apple.com/app/nextdns/id1463342498" rel="noopener">NextDNS app</a></li>
+      <li>Open it → Settings → Configuration ID → paste: <b id="idshow"></b> <button id="copyid" style="width:auto;padding:6px 12px;font-size:15px;display:inline;margin:0 0 0 6px">Copy</button></li>
+      <li>Turn NextDNS <b>on</b></li>
+    </ol></details>
+    <p class="muted">Also turn <b>off</b> Settings → [your name] → iCloud → <b>Private Relay</b>.</p>
+  </div>
+
+  <div class="card hide" id="after">
+    <h2>Test &amp; make it stick</h2>
+    <p style="margin:0 0 6px">This should <b>not</b> open any more: <a href="https://www.bet365.com" rel="nofollow noopener">bet365.com</a></p>
+    <p class="muted" style="margin:0">Give your NextDNS password (and on iPhone your Screen Time code) to someone you trust. Banking and everything else keeps working.</p>
+  </div>
+
+  <div class="card help">
+    <h2>Need to talk to someone?</h2>
+    <p style="margin:0">South Africa <b>0800 006 008</b> · UK <b>0808 8020 133</b> · USA <b>1-800-GAMBLER</b> · Australia <b>1800 858 858</b> · Türkiye <b>115</b><br>
+    Anywhere: <a href="https://www.gamblingtherapy.org">gamblingtherapy.org</a></p>
+  </div>
+  <p class="muted" style="text-align:center">Non-profit · open source · <a href="https://github.com/Dengeninoglu/fuck-gambling">github.com/Dengeninoglu/fuck-gambling</a></p>
+</main>
+<script>
+(function () {
+  const q = new URLSearchParams(location.search);
+  let id = (q.get('id') || '').toLowerCase().trim();
+  let p = q.get('p') || (/iphone|ipad|ipod|macintosh/i.test(navigator.userAgent) && 'ontouchend' in document ? 'iphone' : /android/i.test(navigator.userAgent) ? 'android' : 'android');
+  const valid = s => /^[0-9a-f]{6}$/.test(s);
+  const $ = s => document.getElementById(s);
+  const go = (newId, newP) => { const u = new URL(location.href); if (newId) u.searchParams.set('id', newId); u.searchParams.set('p', newP || p); location.href = u.toString(); };
+  $('tA').onclick = e => { e.preventDefault(); go(valid(id) ? id : '', 'android'); };
+  $('tI').onclick = e => { e.preventDefault(); go(valid(id) ? id : '', 'iphone'); };
+  (p === 'iphone' ? $('tI') : $('tA')).classList.add('on');
+
+  if (!valid(id)) {
+    $('noid').classList.remove('hide');
+    $('go').onclick = () => { const v = $('idin').value.toLowerCase().trim(); if (valid(v)) go(v); else $('idin').style.outline = '3px solid #e5484d'; };
+    return;
+  }
+  $('after').classList.remove('hide');
+  const copy = async (text, btn, label) => {
+    try { await navigator.clipboard.writeText(text); } catch (e) {}
+    btn.textContent = label; btn.classList.add('ok');
+  };
+  if (p === 'iphone') {
+    $('iphone').classList.remove('hide');
+    $('idshow').textContent = id;
+    $('copyid').onclick = () => copy(id, $('copyid'), 'Copied ✓');
+    const uuid = () => ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c => (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)).toUpperCase();
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+<key>PayloadContent</key><array><dict>
+<key>DNSSettings</key><dict><key>DNSProtocol</key><string>HTTPS</string><key>ServerURL</key><string>https://dns.nextdns.io/${id}</string></dict>
+<key>PayloadDisplayName</key><string>FU#K!! G#MBLING (gambling only)</string>
+<key>PayloadIdentifier</key><string>org.fuckgambling.nextdns.${id}.dns</string>
+<key>PayloadType</key><string>com.apple.dnsSettings.managed</string>
+<key>PayloadUUID</key><string>${uuid()}</string><key>PayloadVersion</key><integer>1</integer>
+</dict></array>
+<key>PayloadDescription</key><string>Blocks gambling sites only (NextDNS profile ${id}).</string>
+<key>PayloadDisplayName</key><string>FU#K!! G#MBLING</string>
+<key>PayloadIdentifier</key><string>org.fuckgambling.nextdns.${id}</string>
+<key>PayloadType</key><string>Configuration</string>
+<key>PayloadUUID</key><string>${uuid()}</string><key>PayloadVersion</key><integer>1</integer>
+</dict></plist>`;
+    $('dl').href = 'data:application/x-apple-aspen-config;base64,' + btoa(xml);
+  } else {
+    $('android').classList.remove('hide');
+    const host = id + '.dns.nextdns.io';
+    $('host').textContent = host;
+    $('copy').onclick = () => copy(host, $('copy'), 'Copied ✓  Now paste it into Private DNS');
+  }
+})();
+</script>
+</body>
+</html>

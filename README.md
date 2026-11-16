@@ -36,15 +36,15 @@ Gambling companies spend billions to keep people playing. This costs nothing and
 | Button | What happens |
 |---|---|
 | **1 Protect this PC** | Blocks ~45,000 betting/casino sites in **every browser**, and **nothing else**. Repairs itself every 30 minutes. Optional *strict mode* adds a DNS filter that catches brand-new gambling sites too (it also blocks adult sites). |
-| **2 Protect my phone** | Scan the QR code, and a page opens with two choices: **A) gambling only** (free NextDNS account, ~3 min) or **B) 1 minute, no account** (also blocks adult sites). iPhone and Android, no cable. |
+| **2 Protect my phone** | Choose **A) gambling only** (the app walks you through a free NextDNS account on the computer, then shows *your* QR code) or **B) 1 minute, no account** (also blocks adult sites). Scan the QR, then tap *Install* (iPhone) or *Copy → paste* (Android). No cable. |
 | **3 Erase gambling traces** | Deletes gambling history, searches, cookies, saved logins and suggestions from Chrome, Edge, Brave and Opera. Everything else stays. You see a list first. |
 
 <p align="center">
-<img src="docs/img/iphone.png" width="380" alt="iPhone setup">&nbsp;&nbsp;
-<img src="docs/img/android.png" width="380" alt="Android setup">
+<img src="docs/img/phone-a-qr.png" width="380" alt="A: gambling only">&nbsp;&nbsp;
+<img src="docs/img/phone-b.png" width="380" alt="B: no account">
 </p>
 
-> 📱 **No computer?** Open the setup page on your phone: **[iPhone](https://dengeninoglu.github.io/fuck-gambling/iphone/)** · **[Android](https://dengeninoglu.github.io/fuck-gambling/android/)**
+> 📱 **No computer?** On your phone: **[A: gambling only](https://dengeninoglu.github.io/fuck-gambling/a/)** · B (no account, also blocks adult sites): **[iPhone](https://dengeninoglu.github.io/fuck-gambling/FuckGambling.mobileconfig)** · **[Android](https://dengeninoglu.github.io/fuck-gambling/android/#b)**
 
 ### Step 3 · Make it stick (most important)
 A blocker buys you time. These steps make sure an urge can't undo it in a weak moment:
