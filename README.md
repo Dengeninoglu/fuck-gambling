@@ -36,7 +36,7 @@ Gambling companies spend billions to keep people playing. This costs nothing and
 | Button | What happens |
 |---|---|
 | **1 Protect this PC** | Blocks ~45,000 betting/casino sites, plus new ones as they appear. Works in **every browser**. Repairs itself every 30 minutes. |
-| **2 Protect my phone** | **iPhone:** scan the QR code with the Camera app, then tap *Install*. **Android:** type one word into *Settings → Private DNS*. No cable needed. |
+| **2 Protect my phone** | **iPhone:** scan the QR code with the Camera app, then tap *Install*. **Android:** scan the QR code, tap *Copy*, paste it into *Settings → Private DNS*. No cable needed. |
 | **3 Erase gambling traces** | Deletes gambling history, searches, cookies, saved logins and suggestions from Chrome, Edge, Brave and Opera. Everything else stays. You see a list first. |
 
 <p align="center">
@@ -46,7 +46,7 @@ Gambling companies spend billions to keep people playing. This costs nothing and
 
 > 📱 **No computer? Set up your phone directly:**
 > **iPhone:** open [this link in Safari](https://dengeninoglu.github.io/fuck-gambling/FuckGambling.mobileconfig) → *Allow* → Settings → *Profile Downloaded* → *Install* → then Settings → General → VPN, DNS & Device Management → DNS → select *FU#K!! G#MBLING*.
-> **Android 9+:** Settings → search *Private DNS* → *Private DNS provider hostname* → type `child.joindns4.eu` → Save.
+> **Android 9+:** open [this page](https://dengeninoglu.github.io/fuck-gambling/android/) on your phone. It has a Copy button and steps for your brand. Or go to Settings → *Private DNS* → *Private DNS provider hostname* → `child.joindns4.eu` → Save.
 
 ### Step 3 · Make it stick (most important)
 A blocker buys you time. These steps make sure an urge can't undo it in a weak moment:

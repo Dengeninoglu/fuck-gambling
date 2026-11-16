@@ -170,7 +170,11 @@ class App(tk.Tk):
                      font=("Consolas", 9)).pack(anchor="w", pady=(8, 0))
             self.log("iPhone profile ready. Scan the QR code with your iPhone.")
         else:
-            tk.Label(win, text="Android - takes 30 seconds, no cable needed", fg=FG, bg=BG, font=big).pack(anchor="w")
+            tk.Label(win, text="Android - scan with the phone camera (or Google Lens)", fg=FG, bg=BG, font=big).pack(anchor="w")
+            tk.Label(win, text="A page opens with a Copy button and the steps for your phone brand.",
+                     fg="#aaa", bg=BG, font=("Segoe UI", 9)).pack(anchor="w")
+            self.draw_qr(win, phones.ANDROID_URL, box=5).pack(pady=8)
+            tk.Label(win, text="Or do it by hand:", fg="#aaa", bg=BG, font=("Segoe UI", 9)).pack(anchor="w")
             tk.Label(win, text="\n".join([
                 "1. Open Settings and search for  Private DNS",
                 "     (Samsung: Connections > More connection settings > Private DNS)",

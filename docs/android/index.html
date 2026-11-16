@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FU#K!! G#MBLING – Android</title>
+<style>
+  :root { --red:#e5484d; --bg:#111214; --card:#1c1d21; --fg:#f2f2f2; --muted:#a0a0a8; }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
+  main { max-width:560px; margin:0 auto; padding:20px 16px 48px; }
+  h1 { color:var(--red); font-size:30px; margin:8px 0 2px; letter-spacing:.5px; }
+  .sub { color:var(--muted); margin:0 0 20px; }
+  .card { background:var(--card); border-radius:14px; padding:16px; margin:14px 0; }
+  .n { display:inline-block; width:28px; height:28px; border-radius:50%; background:var(--red); color:#fff; text-align:center; font-weight:700; line-height:28px; margin-right:8px; }
+  h2 { font-size:19px; margin:0 0 10px; }
+  .host { font:700 22px/1.2 ui-monospace,Consolas,monospace; background:#fff; color:#000; border-radius:10px; padding:14px; text-align:center; user-select:all; word-break:break-all; }
+  button { width:100%; margin-top:10px; padding:16px; font-size:18px; font-weight:700; color:#fff; background:var(--red); border:0; border-radius:12px; cursor:pointer; }
+  button.ok { background:#2f9e44; }
+  details { border-top:1px solid #2c2d33; padding:10px 0; }
+  details:first-of-type { border-top:0; }
+  summary { cursor:pointer; font-weight:600; }
+  ol { margin:8px 0 0; padding-left:22px; }
+  a { color:#7cc4ff; }
+  .muted { color:var(--muted); font-size:15px; }
+  .help { border:1px solid #2f9e44; }
+</style>
+</head>
+<body>
+<main>
+  <h1>FU#K!! G#MBLING</h1>
+  <p class="sub">Block betting &amp; casino sites on this phone. Free, 1 minute, fully reversible.</p>
+
+  <div class="card">
+    <h2><span class="n">1</span>Copy this</h2>
+    <div class="host" id="host">child.joindns4.eu</div>
+    <button id="copy">Copy</button>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">2</span>Open Private DNS</h2>
+    <p style="margin:0">Open <b>Settings</b> and search for <b>Private DNS</b>. Or find it here:</p>
+    <details><summary>Samsung</summary><ol><li>Settings → Connections</li><li>More connection settings</li><li>Private DNS</li></ol></details>
+    <details><summary>Google Pixel / Motorola / Nokia</summary><ol><li>Settings → Network &amp; internet</li><li>Private DNS</li></ol></details>
+    <details><summary>Xiaomi / Redmi / POCO</summary><ol><li>Settings → Connection &amp; sharing</li><li>Private DNS</li></ol></details>
+    <details><summary>Huawei / Honor</summary><ol><li>Settings → Mobile network (or More connections)</li><li>Private DNS / Encrypted DNS</li></ol></details>
+    <details><summary>Oppo / Realme / OnePlus</summary><ol><li>Settings → Connection &amp; sharing (OnePlus: Wi-Fi &amp; network)</li><li>Private DNS</li></ol></details>
+    <p class="muted">No Private DNS? Your phone is older than Android 9. Ask someone to set the DNS on your home router: 86.54.11.12</p>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">3</span>Paste &amp; Save</h2>
+    <ol>
+      <li>Choose <b>Private DNS provider hostname</b></li>
+      <li>Long-press the box → <b>Paste</b></li>
+      <li>Tap <b>Save</b></li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2><span class="n">4</span>Test it</h2>
+    <p style="margin:0 0 6px">This link should <b>not</b> open any more:</p>
+    <a href="https://www.bet365.com" rel="nofollow noopener">bet365.com</a>
+    <p class="muted">Your banking, crypto and other apps keep working. To undo: Private DNS → Automatic.</p>
+  </div>
+
+  <div class="card">
+    <h2>Make it stick</h2>
+    <p style="margin:0">Let someone you trust lock your settings with <b>Google Family Link</b> or <b>Digital Wellbeing</b>, and keep the password. A blocker buys time. The people around you do the rest.</p>
+  </div>
+
+  <div class="card help">
+    <h2>Need to talk to someone?</h2>
+    <p style="margin:0">South Africa <b>0800 006 008</b> · UK <b>0808 8020 133</b> · USA <b>1-800-GAMBLER</b> · Australia <b>1800 858 858</b> · Türkiye <b>115</b><br>
+    Anywhere: <a href="https://www.gamblingtherapy.org">gamblingtherapy.org</a></p>
+  </div>
+
+  <p class="muted" style="text-align:center">Non-profit · open source · <a href="https://github.com/Dengeninoglu/fuck-gambling">github.com/Dengeninoglu/fuck-gambling</a></p>
+</main>
+<script>
+  const btn = document.getElementById('copy');
+  const host = document.getElementById('host').textContent.trim();
+  btn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(host);
+    } catch (e) {
+      const r = document.createRange(); r.selectNodeContents(document.getElementById('host'));
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      try { document.execCommand('copy'); } catch (_) {}
+    }
+    btn.textContent = 'Copied ✓  Now go to step 2';
+    btn.classList.add('ok');
+  });
+</script>
+</body>
+</html>
