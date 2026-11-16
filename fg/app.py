@@ -218,46 +218,103 @@ class App(tk.Tk):
                 return
             nid = self._saved_id()
             if nid:
-                label(f"Your NextDNS ID: {nid}   (only gambling is blocked)", "#8be09b", 9)
+                ok = phones.nextdns_blocks_gambling(nid)
+                if ok is False:
+                    label(f"Your NextDNS ID: {nid}", "#aaa", 9)
+                    label("⚠  This NextDNS profile does NOT block gambling yet.", RED, 12, True, pady=(8, 4))
+                    label("\n".join([
+                        "Open NextDNS  >  Parental Control  and check:",
+                        "  •  'Gambling' is listed under Categories and its switch is ON (blue)",
+                        "  •  'Recreation Time' is not turned on for Gambling",
+                        "  •  you are in the right profile (ID at the top must be  " + nid + ")",
+                        "",
+                        "Changes take up to a minute. Then press  Check again.",
+                    ]))
+                    rb = tk.Frame(body, bg=BG)
+                    rb.pack(anchor="w", pady=(10, 0))
+                    tk.Button(rb, text="Fix it for me (API key)", bg=RED, fg="white", relief="flat",
+                              font=("Segoe UI", 10, "bold"), cursor="hand2",
+                              command=lambda: (self._id_file().unlink(missing_ok=True), render())).pack(side="left")
+                    tk.Button(rb, text="I fixed it - check again", command=render).pack(side="left", padx=8)
+                    tk.Button(body, text="Open NextDNS Parental Control", relief="flat", bg=BG, fg="#888",
+                              activebackground=BG, cursor="hand2",
+                              command=lambda: webbrowser.open(f"https://my.nextdns.io/{nid}/parentalcontrol")).pack(anchor="w", pady=(8, 0))
+                    self.log(f"NextDNS {nid}: gambling is NOT blocked yet - turn on the Gambling category.")
+                    return
+                label(f"Your NextDNS ID: {nid}   " + ("✔ blocks gambling, nothing else" if ok else "(could not check - no internet?)"),
+                      "#8be09b" if ok else "#f0c96b", 9)
                 show_qr(f"{phones.GAMBLING_ONLY_URL}?id={nid}&p={'iphone' if ios else 'android'}",
                         ["1. Tap Install profile  >  Allow  >  Close",
                          "2. Settings  >  Profile Downloaded  >  Install",
                          "3. Settings > General > VPN, DNS & Device Management > DNS > FU#K!! G#MBLING"] if ios else
                         ["1. Tap Copy on the page",
                          "2. Settings > Private DNS > Private DNS provider hostname > Paste > Save"])
-                tk.Button(body, text="Use a different NextDNS ID", command=lambda: (self._id_file().unlink(missing_ok=True), render())).pack(anchor="w", pady=(10, 0))
+                tk.Button(body, text="Set up again (update settings / other account)", command=lambda: (self._id_file().unlink(missing_ok=True), render())).pack(anchor="w", pady=(10, 0))
                 return
-            label("Do this part here on the computer (3 minutes), then scan one QR code with the phone.", "#aaa", 9, pady=(4, 6))
+            label("Do this part here on the computer (2 minutes). The app sets everything up for you.", "#aaa", 9, pady=(4, 6))
             label("Step 1", bold=True)
-            tk.Button(body, text="Open NextDNS sign-up (free)", bg=RED, fg="white", relief="flat", font=("Segoe UI", 10, "bold"),
+            tk.Button(body, text="Create a free NextDNS account", bg=RED, fg="white", relief="flat", font=("Segoe UI", 10, "bold"),
                       cursor="hand2", command=lambda: webbrowser.open("https://my.nextdns.io/signup")).pack(anchor="w", pady=(2, 8))
             label("Step 2", bold=True)
-            label("In NextDNS: Parental Control tab  >  Categories  >  Add a category  >  Gambling\n"
-                  "On the same page turn ON  'Block Bypass Methods'  (stops VPNs, proxies and Tor)", pady=(0, 8))
+            tk.Button(body, text="Copy your API key", bg=RED, fg="white", relief="flat", font=("Segoe UI", 10, "bold"),
+                      cursor="hand2", command=lambda: webbrowser.open("https://my.nextdns.io/account")).pack(anchor="w", pady=(2, 2))
+            label("On the page that opens, scroll down to  API  and copy the key.", "#aaa", 9, pady=(0, 8))
             label("Step 3", bold=True)
-            label("Setup tab  >  copy your ID (6 characters) and paste it here:")
+            label("Paste it here and press Set it up:")
             r = tk.Frame(body, bg=BG)
             r.pack(anchor="w", pady=4)
-            e = tk.Entry(r, font=("Consolas", 16, "bold"), width=10, justify="center")
+            e = tk.Entry(r, font=("Consolas", 12), width=34, show="•")
             e.pack(side="left")
-            err = tk.Label(body, text="", fg=RED, bg=BG, font=("Segoe UI", 9))
+            msg = tk.Label(body, text="", fg="#aaa", bg=BG, font=("Segoe UI", 9), justify="left", wraplength=520)
+            msg.pack(anchor="w")
 
-            def save():
-                v = e.get().strip().lower()
-                m = re.search(r"[0-9a-f]{6}", v)
-                if not m:
-                    err.config(text="That doesn't look like a NextDNS ID (6 characters like abc123).")
-                    err.pack(anchor="w")
+            def setup():
+                key = e.get().strip()
+                if len(key) < 20:
+                    msg.config(text="That doesn't look like a NextDNS API key. Copy it again from the account page.", fg=RED)
                     return
-                f = self._id_file()
-                f.parent.mkdir(parents=True, exist_ok=True)
-                f.write_text(m.group(0), encoding="utf-8")
-                self.log(f"NextDNS ID saved: {m.group(0)}")
-                render()
-            tk.Button(r, text="Show my QR code", command=save, bg=RED, fg="white", relief="flat",
-                      font=("Segoe UI", 10, "bold"), cursor="hand2").pack(side="left", padx=8)
-            e.bind("<Return>", lambda ev: save())
+                btn.config(state="disabled")
+                msg.config(text="Setting up your NextDNS (gambling only + block VPNs)... about 10-30 seconds", fg="#aaa")
+
+                def work():
+                    try:
+                        pid = phones.nextdns_setup(key, log=self.log)
+                        f = self._id_file()
+                        f.parent.mkdir(parents=True, exist_ok=True)
+                        f.write_text(pid, encoding="utf-8")
+                        self.after(0, render)
+                    except Exception as ex:
+                        self.after(0, lambda: (msg.config(text=str(ex), fg=RED), btn.config(state="normal")))
+                threading.Thread(target=work, daemon=True).start()
+
+            btn = tk.Button(r, text="Set it up", command=setup, bg=RED, fg="white", relief="flat",
+                            font=("Segoe UI", 10, "bold"), cursor="hand2")
+            btn.pack(side="left", padx=8)
+            e.bind("<Return>", lambda ev: setup())
             e.focus_set()
+            label("The key is only used once to change your NextDNS settings and is never saved.", "#888", 8, pady=(6, 0))
+
+            def manual():
+                for c in body.winfo_children():
+                    c.destroy()
+                label("Already set up NextDNS yourself (Gambling category ON)? Paste your profile ID:", pady=(6, 4))
+                rr = tk.Frame(body, bg=BG)
+                rr.pack(anchor="w")
+                ee = tk.Entry(rr, font=("Consolas", 16, "bold"), width=10, justify="center")
+                ee.pack(side="left")
+
+                def save():
+                    m = re.search(r"[0-9a-f]{6}", ee.get().strip().lower())
+                    if not m:
+                        return
+                    f = self._id_file()
+                    f.parent.mkdir(parents=True, exist_ok=True)
+                    f.write_text(m.group(0), encoding="utf-8")
+                    render()
+                tk.Button(rr, text="Continue", command=save).pack(side="left", padx=8)
+                tk.Button(body, text="Back", command=render).pack(anchor="w", pady=(10, 0))
+            tk.Button(body, text="I already have a NextDNS profile ID", command=manual, relief="flat", bg=BG, fg="#888",
+                      activebackground=BG, cursor="hand2").pack(anchor="w", pady=(8, 0))
 
         render()
 

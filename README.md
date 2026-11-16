@@ -48,7 +48,7 @@ Pick **your country** (it shows your local helpline) and **your phone** (Android
 | | |
 |---|---|
 | **1 Protect this PC** | Blocks ~45,000 betting & casino sites in **every browser**, and nothing else. Repairs itself every 30 minutes. Removal takes 72 hours. |
-| **2 Protect my phone** | Choose **A** or **B** (below), scan the QR code with your phone, then tap *Install* (iPhone) or *Copy → Paste* (Android). No cable. |
+| **2 Protect my phone** | Choose **A** or **B** (below). The app shows a QR code: scan it, then tap *Install* (iPhone) or *Copy → Paste* (Android). No cable. Tested on real iPhones and Android phones. |
 | **3 Erase gambling traces** | Deletes betting history, searches, cookies and saved logins from Chrome, Edge, Brave and Opera, and leaves the rest alone. You see the list first. |
 
 ### Phone: A or B?
@@ -56,8 +56,9 @@ Pick **your country** (it shows your local helpline) and **your phone** (Android
 | | **A · Gambling only** ✅ recommended | **B · One minute, no account** |
 |---|---|---|
 | Blocks | Betting & casino sites **only** | Betting & casino **and adult sites** |
-| Needs | Free [NextDNS](https://nextdns.io) account (the app walks you through it on the computer, 3 steps) | Nothing |
-| Stops VPN tricks | Yes, with *Block Bypass Methods* | No |
+| Needs | Free [NextDNS](https://nextdns.io) account. **The app sets it up for you**: sign up, copy your API key, paste it. Done. | Nothing |
+| Stops VPN tricks | Yes, turned on automatically (*Block Bypass Methods*) | No |
+| Checked before you start | Yes. The app tests that betting sites are really blocked before it shows your QR code | Yes |
 | Limit | 300,000 lookups/month free (enough for most phones) | None |
 
 <p align="center">
@@ -71,7 +72,7 @@ Pick **your country** (it shows your local helpline) and **your phone** (Android
 ### 3 · Make it stick (the most important step)
 A blocker buys you time. These steps make sure a bad night can't undo it:
 - 🔑 **Give the keys to someone you trust:** your NextDNS password, the iPhone *Screen Time* passcode, Android *Family Link*. They keep them, not you.
-- 🚫 **Block VPNs:** NextDNS → Parental Control → **Block Bypass Methods** ON. iPhone: Screen Time → *VPN & DNS: Don't Allow*.
+- 🚫 **Block VPNs:** option A turns on NextDNS *Block Bypass Methods* for you. On iPhone also set Screen Time → *VPN & DNS: Don't Allow*.
 - 🏦 **Ask your bank to block gambling payments** (most banking apps have a switch).
 - 📝 **Self-exclude** where your country has a scheme (GAMSTOP UK, BetStop Australia, …).
 - 📞 **Talk to someone.** The app shows free helplines for your country.
@@ -86,7 +87,7 @@ No. By default **only gambling** is blocked. Only option **B** on phones and the
 **Can someone get around it with a VPN?**
 Partly, and we'd rather be honest about it.
 - **PC:** the hosts list keeps working even with a VPN on, because it's checked on your computer before any DNS. A brand-new mirror site that isn't on the list yet could still get through.
-- **Phone:** a VPN can skip DNS filtering. Option A with **Block Bypass Methods** blocks most VPN, proxy and Tor services. On iPhone also set *Screen Time → VPN & DNS → Don't Allow*, and on Android use *Family Link* to stop new VPN apps being installed.
+- **Phone:** a VPN can skip DNS filtering. Option A turns on NextDNS **Block Bypass Methods**, which blocks most VPN, proxy and Tor services. On iPhone also set *Screen Time → VPN & DNS → Don't Allow*, and on Android use *Family Link* to stop new VPN apps being installed.
 - **Everywhere:** iCloud Private Relay and Opera's built-in VPN also skip filters. Turn them off.
 
 No blocker can stop someone who is determined to get around it. What it can do is put enough steps in the way that the urge passes first. That's why the "make it stick" steps matter more than any list.
@@ -95,7 +96,7 @@ No blocker can stop someone who is determined to get around it. What it can do i
 
 **Will it break my phone?** No. It only changes the phone's standard DNS setting, which you can switch back in Settings.
 
-**Does it track me?** No. There's no server of ours, no account with us and no analytics. NextDNS (option A) is your own account with them.
+**Does it track me?** No. There's no server of ours, no account with us and no analytics. NextDNS (option A) is your own account with them. Your NextDNS API key is used once to switch on the right settings and is **never saved**.
 
 **I already use Gamban / BetBlocker.** Fine. The app detects them and adds its block list without fighting them.
 
@@ -119,7 +120,7 @@ No blocker can stop someone who is determined to get around it. What it can do i
 <summary><b>For techies: how it works, building, contributing</b></summary>
 
 - **PC (Windows 10/11):** `windows/engine.ps1` runs as a SYSTEM scheduled task (startup, logon, every 30 min). It writes [StevenBlack gambling-only](https://github.com/StevenBlack/hosts) hosts + country lists + numbered-mirror patterns (`brand1.com … brand1000.com`) into the hosts file, pins help sites to their real IPs, and locks Chrome/Edge/Brave/Firefox Secure DNS via policy so browsers can't skip the hosts file. *Strict mode* additionally sets adapter DNS to [DNS4EU](https://www.joindns4.eu/) *Child Protection* (with DoH). Removal uses a 72 h cooldown file. Emergency removal: [docs/UNINSTALL.md](docs/UNINSTALL.md).
-- **Phones, option A:** the user's own NextDNS profile with the Gambling category. `docs/a/` builds an iPhone `com.apple.dnsSettings.managed` profile in the browser from the ID, or shows `<id>.dns.nextdns.io` for Android Private DNS.
+- **Phones, option A:** with the user's NextDNS API key (used once, never stored) the app picks/creates a profile via `api.nextdns.io`, turns on the `gambling` category and `blockBypass`, allowlists help & recovery sites, then verifies over DoH that betting domains resolve to `0.0.0.0` before showing a QR code. `docs/a/` builds an iPhone `com.apple.dnsSettings.managed` profile in the browser from the profile ID, or shows `<id>.dns.nextdns.io` for Android Private DNS.
 - **Phones, option B:** DNS4EU Child Protection: a static iPhone profile on GitHub Pages, and `child.joindns4.eu` for Android Private DNS (optional adb automation).
 - **Browser cleaner:** reads Chromium SQLite DBs (History, Cookies, Login Data, Favicons, Shortcuts, Top Sites…), does a dry-run on copies, then deletes only matching rows.
 - **Run from source:** Python 3.10+, `pip install qrcode`, then `START.bat` (or `python -m fg`).

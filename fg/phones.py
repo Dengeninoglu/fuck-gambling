@@ -175,3 +175,127 @@ def serve_profile(prof: Path, port=8765):
     else:
         _server.RequestHandlerClass = H
     return f"http://{lan_ip()}:{_server.server_address[1]}/fg.mobileconfig"
+
+
+# ---------------- NextDNS check ----------------
+def _dns_query(name):
+    import struct
+    head = struct.pack(">HHHHHH", 0, 0x0100, 1, 0, 0, 0)
+    body = b"".join(bytes([len(p)]) + p.encode() for p in name.split(".")) + b"\x00" + struct.pack(">HH", 1, 1)
+    return head + body
+
+
+def _dns_answers(resp):
+    import struct
+    count = struct.unpack(">H", resp[6:8])[0]
+    i = 12
+    while resp[i]:
+        i += resp[i] + 1
+    i += 5
+    ips = []
+    for _ in range(count):
+        if resp[i] & 0xC0 == 0xC0:
+            i += 2
+        else:
+            while resp[i]:
+                i += resp[i] + 1
+            i += 1
+        rtype, _, _, ln = struct.unpack(">HHIH", resp[i:i + 10])
+        i += 10
+        if rtype == 1:
+            ips.append(".".join(map(str, resp[i:i + 4])))
+        i += ln
+    return resp[3] & 15, ips
+
+
+def nextdns_blocks_gambling(profile_id, timeout=8):
+    """True if this NextDNS profile blocks well-known betting sites, False if not, None if it can't be checked."""
+    results = []
+    for name in ("bet365.com", "betway.com", "1xbet.com"):
+        try:
+            req = urllib.request.Request(f"https://dns.nextdns.io/{profile_id}", data=_dns_query(name),
+                                         headers={"content-type": "application/dns-message",
+                                                  "accept": "application/dns-message"})
+            rcode, ips = _dns_answers(urllib.request.urlopen(req, timeout=timeout).read())
+            results.append(rcode == 3 or not ips or all(ip == "0.0.0.0" for ip in ips))
+        except Exception:
+            continue
+    if not results:
+        return None
+    return sum(results) >= 2 if len(results) >= 2 else results[0]
+
+
+# ---------------- NextDNS automatic setup (option A) ----------------
+NEXTDNS_API = "https://api.nextdns.io"
+NEXTDNS_PROFILE_NAME = "FU#K!! G#MBLING"
+
+
+def _api(api_key, method, path, body=None, timeout=15):
+    import json
+    data = json.dumps(body).encode() if body is not None else None
+    req = urllib.request.Request(NEXTDNS_API + path, data=data, method=method,
+                                 headers={"X-Api-Key": api_key, "Content-Type": "application/json",
+                                          "User-Agent": "fuck-gambling"})
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            raw = r.read()
+            return r.status, (json.loads(raw) if raw else {})
+    except urllib.error.HTTPError as e:
+        raw = e.read()
+        try:
+            return e.code, json.loads(raw)
+        except ValueError:
+            return e.code, {}
+
+
+def nextdns_setup(api_key, log=print):
+    """Use the user's NextDNS API key to make a profile that blocks gambling (+ bypass methods).
+    Returns the profile ID. The key is only used for these calls and is never stored."""
+    import time
+    api_key = api_key.strip()
+    status, res = _api(api_key, "GET", "/profiles")
+    if status in (401, 403):
+        raise RuntimeError("NextDNS did not accept this API key. Copy it again from my.nextdns.io/account.")
+    if status != 200:
+        raise RuntimeError(f"Could not reach NextDNS (error {status}). Check the internet connection.")
+    profiles = res.get("data", [])
+    ours = [p for p in profiles if p.get("name") == NEXTDNS_PROFILE_NAME]
+    if ours:
+        pid = ours[0]["id"]
+    elif profiles:
+        pid = profiles[0]["id"]  # a new account comes with one empty profile - use it
+    else:
+        status, res = _api(api_key, "POST", "/profiles", {"name": NEXTDNS_PROFILE_NAME})
+        if status not in (200, 201):
+            raise RuntimeError(f"Could not create a NextDNS profile (error {status}).")
+        pid = res["data"]["id"]
+    log(f"NextDNS profile: {pid}")
+    # gambling category on (add it, or switch it on if it already exists)
+    status, _ = _api(api_key, "PATCH", f"/profiles/{pid}/parentalControl/categories/gambling", {"active": True})
+    if status == 404:
+        status, _ = _api(api_key, "POST", f"/profiles/{pid}/parentalControl/categories", {"id": "gambling", "active": True})
+    if status not in (200, 201, 204):
+        raise RuntimeError(f"Could not turn on the Gambling category (error {status}).")
+    log("Gambling category: ON")
+    status, _ = _api(api_key, "PATCH", f"/profiles/{pid}/parentalControl", {"blockBypass": True})
+    log("Block Bypass Methods (VPN/proxy/Tor): " + ("ON" if status in (200, 204) else f"could not set (error {status})"))
+    # help & recovery sites must never be blocked (the gambling category hides some of them)
+    try:
+        from .blocklist import LISTS
+        helps = [l.split("#", 1)[0].strip().lower() for l in (LISTS / "help-sites.txt").read_text(encoding="utf-8").splitlines()]
+        helps = [h for h in helps if h]
+    except OSError:
+        helps = []
+    added = 0
+    for h in helps:
+        st, _ = _api(api_key, "POST", f"/profiles/{pid}/allowlist", {"id": h, "active": True})
+        added += st in (200, 201, 204, 409)
+    if helps:
+        log(f"Help & recovery sites kept open: {added}/{len(helps)}")
+    for _ in range(12):  # NextDNS needs a few seconds to apply
+        if nextdns_blocks_gambling(pid):
+            log("Test: betting sites are blocked ✔")
+            return pid
+        time.sleep(5)
+    log("Settings saved, but the test does not show blocking yet. Try 'Check again' in a minute.")
+    return pid
