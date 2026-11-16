@@ -1,57 +1,92 @@
-# FU#K!! G#MBLING
+<p align="center"><img src="docs/img/icon.png" width="96" alt=""></p>
 
-**Free, open-source gambling blocker for your PC and phone.** No account, no subscription, no tracking.
-Built by someone fighting gambling addiction, for everyone who is. If it helps you, share it.
+<h1 align="center">FU#K!! G#MBLING</h1>
 
-> Gambling companies spend billions to keep you playing. This costs nothing.
+<p align="center"><b>Block every betting and casino site on your computer and your phone.<br>
+Free forever. Non-profit. No account. No ads. No data collected.</b></p>
 
-## What it does
-| | |
+<p align="center">
+  <a href="https://github.com/Dengeninoglu/fuck-gambling/releases/latest/download/FuckGambling.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/DOWNLOAD-Windows%2010%20%2F%2011-e5484d?style=for-the-badge&logo=windows&logoColor=white"></a>
+</p>
+
+<p align="center"><i>Built by someone fighting gambling addiction, for everyone who is.</i></p>
+
+---
+
+## 🤝 A non-profit project
+FU#K!! G#MBLING is a **non-profit, volunteer project**. We don't sell anything, show ads or collect data, and we don't take a cut.
+Gambling companies spend billions to keep people playing. This costs nothing and always will.
+
+**Organisations** fighting gambling harm (helplines, clinics, charities, regulators): you may use, translate, rebrand and hand this out for free (MIT license). Open an issue and we'll help you set it up for your country.
+
+---
+
+## How to use it (3 minutes)
+
+### Step 1 · Download and open
+1. Click the red **DOWNLOAD** button above.
+2. Open **FuckGambling.exe**. Windows asks *"Do you want to allow this app to make changes?"*, click **Yes**.
+   > If a blue box says *"Windows protected your PC"*, click **More info → Run anyway**. Small free apps without a paid certificate always show this. The full source code is on this page.
+3. Choose **your country** (this shows your local helpline) and **your phone** (Android or iPhone).
+
+<p align="center"><img src="docs/img/main.png" width="460" alt="Main window"></p>
+
+### Step 2 · Press the three buttons
+
+| Button | What happens |
 |---|---|
-| **1. Protect this PC** (Windows 10/11) | Blocks ~45,000 gambling domains in the hosts file, sets DNS to a filter that also blocks *new* gambling sites, stops browsers from bypassing it with their own "Secure DNS", repairs itself every 30 min. Removing it requires a **72-hour waiting period**, so an urge cannot undo it. |
-| **2. Protect my phone** | **Android 9+**: sets *Private DNS* over USB (one standard, reversible setting). **iPhone**: creates a DNS profile you install with one tap. Works on Wi-Fi *and* mobile data. |
-| **3. Erase gambling traces** | Removes gambling history, searches, cookies, saved logins, site data and address-bar suggestions from Chrome, Edge, Brave and Opera, and leaves everything else alone. You see what will be deleted before anything is touched. |
+| **1 Protect this PC** | Blocks ~45,000 betting/casino sites, plus new ones as they appear. Works in **every browser**. Repairs itself every 30 minutes. |
+| **2 Protect my phone** | **iPhone:** scan the QR code with the Camera app, then tap *Install*. **Android:** type one word into *Settings → Private DNS*. No cable needed. |
+| **3 Erase gambling traces** | Deletes gambling history, searches, cookies, saved logins and suggestions from Chrome, Edge, Brave and Opera. Everything else stays. You see a list first. |
 
-Banks, crypto exchanges and help/recovery sites keep working (`lists/allow-*.txt`, `lists/help-sites.txt`).
+<p align="center">
+<img src="docs/img/iphone.png" width="380" alt="iPhone setup">&nbsp;&nbsp;
+<img src="docs/img/android.png" width="380" alt="Android setup">
+</p>
 
-## Quick start (Windows)
-1. Install [Python 3.10+](https://www.python.org/downloads/) (tick *Add to PATH*).
-2. Download this repo (green **Code** button → *Download ZIP*) and unzip it.
-3. Double-click **`START.bat`** → pick your country → press 1, 2, 3.
+### Step 3 · Make it stick (most important)
+A blocker buys you time. These steps make sure an urge can't undo it in a weak moment:
+- 🔑 **Give a code to someone you trust.** iPhone: let them set the *Screen Time* passcode. Android: *Google Family Link*. They keep it, not you.
+- 🏦 **Ask your bank to block gambling payments** on your cards (most banking apps have this).
+- 🚫 **Self-exclude** from betting companies if your country has a scheme (GAMSTOP UK, BetStop Australia, …).
+- 📞 **Talk to someone.** The app shows free helplines for your country.
 
-Optional for pushing the profile to an iPhone over USB: `pip install pymobiledevice3`.
+---
 
-## Any other device (TV, tablet, console, Mac, Linux, the whole house)
-Set your **router's** DNS (or the device's DNS) to:
-```
-IPv4: 86.54.11.12   86.54.11.212
-IPv6: 2a13:1001::86:54:11:12   2a13:1001::86:54:11:212
-DNS-over-TLS (Android Private DNS): child.joindns4.eu
-DNS-over-HTTPS: https://child.joindns4.eu/dns-query
-```
-This is [DNS4EU](https://www.joindns4.eu/) *Protective + Child Protection*, a free public resolver. It blocks gambling **and adult** content.
+## ✅ What keeps working
+Banking apps, crypto exchanges, work, school, YouTube, social media and **help & recovery sites**. Only gambling is blocked.
 
-## Make it stick
-Software alone can't stop someone who is determined, but it buys you time. That time is what you need.
-- Let a **person you trust** hold the iPhone Screen Time passcode / your PC's admin password.
-- On Windows, use a **standard (non-admin) account** day to day.
-- Ask your bank to **block gambling transactions** on your cards.
-- Use your country's **self-exclusion** scheme (GAMSTOP UK, BetStop AU, ...).
-- Talk to someone. Helplines are shown in the app for your country. Worldwide: [gamblingtherapy.org](https://www.gamblingtherapy.org), [gamblersanonymous.org](https://www.gamblersanonymous.org).
+## ❓ FAQ
+**Can I turn it off?** Yes, on purpose slowly: *Remove protection* starts a **72-hour waiting time**. The urge passes long before that. You can cancel the request any time.
+**Does it break my phone?** No. It only changes the phone's standard *Private DNS* / DNS profile setting, and you can switch it back in Settings.
+**Does it track me?** No. There is no server, no account and no analytics. It runs on your device only.
+**Mac / TV / tablet / the whole house?** Set your router's DNS to `86.54.11.12` and `86.54.11.212` (instructions are usually under *Internet / DNS* in the router page).
+**I already use Gamban / BetBlocker.** Fine. The app detects them and adds its block list on top without fighting them.
 
-## Known limits (honest)
-- The DNS filter also blocks some recovery sites. On Windows the app pins them so they still open; on phones some may not open (helplines by phone always work).
-- VPNs, Tor and Opera's built-in VPN bypass DNS blocking. Don't install them.
-- Some hotel/work Wi-Fi networks block outside DNS. If the internet stops working there, see *Uninstall → emergency*.
-- PC protection is Windows-only for now. Mac/Linux: use the router method. PRs welcome!
+## Need help right now?
+| Country | Free helpline |
+|---|---|
+| 🇿🇦 South Africa | **0800 006 008** (SA Responsible Gambling Foundation, 24/7) |
+| 🇬🇧 United Kingdom | **0808 8020 133** (National Gambling Helpline, 24/7) |
+| 🇺🇸 United States | **1-800-GAMBLER** |
+| 🇦🇺 Australia | **1800 858 858** (Gambling Help, 24/7) |
+| 🇹🇷 Türkiye | **115** (YEDAM, 7/24) |
+| 🌍 Anywhere | [gamblingtherapy.org](https://www.gamblingtherapy.org) (free, online, many languages) · [Gamblers Anonymous](https://www.gamblersanonymous.org) |
 
-## Uninstall
-- **Normal:** app → *Remove protection* → *Request removal*. It is removed automatically after 72 hours. You can cancel any time.
-- **Phone:** Android: app → *Undo phone*, or Settings → Private DNS → Automatic. iPhone: Settings → General → VPN, DNS & Device Management → remove the profile.
-- **Emergency (admin PowerShell):** see [docs/UNINSTALL.md](docs/UNINSTALL.md).
+---
 
-## Add your country
-Edit `lists/countries.json` (name + free helplines) and optionally add `lists/<code>.txt` (gambling domains), `lists/allow-<code>.txt` (banks), `lists/mirrors-<code>.txt`. Open a pull request.
+<details>
+<summary><b>For techies: how it works, building, contributing</b></summary>
 
-## Credits
-Block lists: [StevenBlack/hosts](https://github.com/StevenBlack/hosts) (gambling-only). DNS: [DNS4EU](https://www.joindns4.eu/). License: MIT. Free forever, for any person or organisation.
+- **PC (Windows 10/11):** `windows/engine.ps1` runs as a SYSTEM scheduled task (startup, logon, every 30 min). It writes [StevenBlack gambling-only](https://github.com/StevenBlack/hosts) hosts + country lists + numbered-mirror patterns into the hosts file, pins help sites to real IPs, sets adapter DNS to [DNS4EU](https://www.joindns4.eu/) *Protective + Child Protection* (with DoH), and locks Chrome/Edge/Brave/Firefox DoH via policy. Uninstall uses a 72 h cooldown file. Emergency removal: [docs/UNINSTALL.md](docs/UNINSTALL.md).
+- **Android:** Private DNS `child.joindns4.eu` (DoT). Optional USB/adb automation.
+- **iPhone:** `com.apple.dnsSettings.managed` profile served over local Wi-Fi via QR. Guide: [docs/IPHONE.md](docs/IPHONE.md).
+- **Run from source:** Python 3.10+, `pip install qrcode`, then `START.bat` (or `python -m fg`).
+- **Build exe:** `pip install pyinstaller qrcode` then PyInstaller `--onefile --windowed --uac-admin` with `lists` and `windows` as data (see release notes).
+- **Add your country:** edit `lists/countries.json` (name + free helplines) and add `lists/<code>.txt` (gambling sites), `lists/allow-<code>.txt` (banks), `lists/mirrors-<code>.txt`. PRs welcome!
+
+**Known limits:** VPNs/Tor bypass DNS blocking. On phones the DNS filter also hides some recovery websites (phone helplines always work). A determined admin can remove anything on their own PC. That is why Step 3 matters.
+
+</details>
+
+<p align="center"><sub>MIT License · Block lists: StevenBlack/hosts · DNS: DNS4EU · Made with anger and hope.</sub></p>

@@ -24,7 +24,7 @@ def is_admin():
 
 
 def relaunch_as_admin():
-    args = " ".join(f'"{a}"' for a in ["-m", "fg"] + sys.argv[1:])
+    args = "" if getattr(sys, "frozen", False) else " ".join(f'"{a}"' for a in ["-m", "fg"] + sys.argv[1:])
     ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, args, str(ROOT), 1)
 
 
@@ -143,24 +143,71 @@ class App(tk.Tk):
                              self.ps("-Countries", ",".join(codes)) and self.log("✔ PC protected.")))
 
     def protect_phone(self):
-        if self.phone.get() == "android":
-            if not messagebox.askyesno(APP_NAME, (
-                    "Android:\n1. Settings > About phone > tap 'Build number' 7 times\n"
-                    "2. Settings > Developer options > turn on 'USB debugging'\n"
-                    "3. Connect the USB cable, tap 'Allow' on the phone\n\n"
-                    "Only the phone's Private DNS setting is changed (fully reversible).\nReady?")):
-                return
-            self.run_bg(lambda: phones.android_protect(log=self.log))
+        win = tk.Toplevel(self, bg=BG, padx=20, pady=16)
+        win.title("Protect my phone")
+        win.transient(self)
+        big = ("Segoe UI", 12, "bold")
+        txt = ("Segoe UI", 10)
+        if self.phone.get() == "ios":
+            prof = phones.ios_profile(Path.home() / "FuckGambling-DNS.mobileconfig")
+            url = phones.serve_profile(prof)
+            tk.Label(win, text="iPhone - scan with the Camera app", fg=FG, bg=BG, font=big).pack(anchor="w")
+            tk.Label(win, text="Phone and PC must be on the same Wi-Fi. If Windows asks about the firewall, click Allow.",
+                     fg="#aaa", bg=BG, font=("Segoe UI", 9), wraplength=420, justify="left").pack(anchor="w")
+            self.draw_qr(win, url).pack(pady=10)
+            steps = "\n".join([
+                "1. Open the iPhone Camera, point it at the code, tap the yellow link",
+                "2. Tap Allow  >  Close",
+                "3. Settings  >  Profile Downloaded  >  Install (top right)  >  passcode  >  Install",
+                "4. Settings > General > VPN, DNS & Device Management > DNS: select FU#K!! G#MBLING",
+                "5. Settings > [your name] > iCloud > Private Relay: OFF",
+                "",
+                "Make it stick: let someone you trust set a Screen Time passcode and turn",
+                "'VPN & DNS' and 'Account Changes' to Don't Allow. (Guide: docs/IPHONE.md)",
+            ])
+            tk.Label(win, text=steps, fg=FG, bg=BG, font=txt, justify="left").pack(anchor="w")
+            tk.Label(win, text=f"No camera? Open in iPhone Safari:  {url}", fg="#888", bg=BG,
+                     font=("Consolas", 9)).pack(anchor="w", pady=(8, 0))
+            self.log("iPhone profile ready. Scan the QR code with your iPhone.")
         else:
-            out = Path.home() / "Desktop"
-            self.run_bg(lambda: phones.ios_protect(out if out.exists() else ROOT, log=self.log))
-            messagebox.showinfo(APP_NAME, (
-                "iPhone - after installing the profile:\n\n"
-                "• Settings > General > VPN, DNS & Device Management > DNS: select FU#K!! G#MBLING\n"
-                "• Settings > [your name] > iCloud > Private Relay: OFF\n"
-                "• Settings > Screen Time > Lock Screen Time Settings: let a person you trust set the code\n"
-                "• Content & Privacy Restrictions > VPN & DNS / Account Changes: Don't Allow\n\n"
-                "Full guide: docs/IPHONE.md"))
+            tk.Label(win, text="Android - takes 30 seconds, no cable needed", fg=FG, bg=BG, font=big).pack(anchor="w")
+            tk.Label(win, text="\n".join([
+                "1. Open Settings and search for  Private DNS",
+                "     (Samsung: Connections > More connection settings > Private DNS)",
+                "2. Choose  'Private DNS provider hostname'",
+                "3. Type exactly this and tap Save:",
+            ]), fg=FG, bg=BG, font=txt, justify="left").pack(anchor="w", pady=(8, 4))
+            row = tk.Frame(win, bg=BG)
+            row.pack(anchor="w")
+            e = tk.Entry(row, font=("Consolas", 16, "bold"), width=20, justify="center")
+            e.insert(0, phones.DOT_HOST)
+            e.config(state="readonly")
+            e.pack(side="left")
+            tk.Button(row, text="Copy", command=lambda: (self.clipboard_clear(),
+                                                        self.clipboard_append(phones.DOT_HOST))).pack(side="left", padx=6)
+            tk.Label(win, text="\n".join([
+                "4. Test: a betting site should no longer open. Your bank still works.",
+                "",
+                "Make it stick: Google Family Link or Digital Wellbeing can lock settings -",
+                "let someone you trust hold that password.",
+            ]), fg=FG, bg=BG, font=txt, justify="left").pack(anchor="w", pady=(8, 0))
+            tk.Label(win, text="Advanced: set it automatically over USB (needs USB debugging)", fg="#aaa", bg=BG,
+                     font=("Segoe UI", 9)).pack(anchor="w", pady=(14, 2))
+            tk.Button(win, text="Set it over USB",
+                      command=lambda: self.run_bg(lambda: phones.android_protect(log=self.log))).pack(anchor="w")
+
+    def draw_qr(self, parent, data, box=6):
+        import qrcode
+        qr = qrcode.QRCode(border=2, box_size=1)
+        qr.add_data(data)
+        qr.make(fit=True)
+        m = qr.get_matrix()
+        c = tk.Canvas(parent, width=len(m) * box, height=len(m) * box, bg="white", highlightthickness=0)
+        for y, row in enumerate(m):
+            for x, v in enumerate(row):
+                if v:
+                    c.create_rectangle(x * box, y * box, (x + 1) * box, (y + 1) * box, fill="black", outline="black")
+        return c
 
     def clean_browsers(self):
         def work():

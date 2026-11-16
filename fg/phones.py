@@ -4,7 +4,11 @@ Android: sets Private DNS (Settings > Network > Private DNS) over USB debugging 
 iPhone : builds a DNS configuration profile; pushes it over USB (user taps Install on the phone)
          or the user opens the file from Mail / Files.
 """
+import http.server
 import io
+import os
+import socket
+import threading
 import shutil
 import subprocess
 import sys
@@ -17,7 +21,8 @@ DOT_HOST = "child.joindns4.eu"          # DNS-over-TLS hostname for Android Priv
 DOH_URL = "https://child.joindns4.eu/dns-query"
 DNS_IPS = ["86.54.11.12", "86.54.11.212", "2a13:1001::86:54:11:12", "2a13:1001::86:54:11:212"]
 PLATFORM_TOOLS = "https://dl.google.com/android/repository/platform-tools-latest-windows.zip"
-TOOLS = Path(__file__).resolve().parent.parent / "tools"
+TOOLS = Path(os.environ.get("LOCALAPPDATA", Path.home())) / "FuckGambling" / "tools"
+FROZEN = getattr(sys, "frozen", False)
 NOWIN = 0x08000000 if sys.platform == "win32" else 0
 
 
@@ -30,7 +35,7 @@ def adb_path(download=True, log=print):
         return None
     log("Downloading Android platform-tools from Google (~7 MB)...")
     data = urllib.request.urlopen(PLATFORM_TOOLS, timeout=60).read()
-    TOOLS.mkdir(exist_ok=True)
+    TOOLS.mkdir(parents=True, exist_ok=True)
     zipfile.ZipFile(io.BytesIO(data)).extractall(TOOLS)
     return str(TOOLS / "platform-tools" / "adb.exe")
 
@@ -103,6 +108,8 @@ def ios_profile(path: Path):
 def ios_protect(out_dir: Path, log=print):
     prof = ios_profile(out_dir / "FuckGambling-DNS.mobileconfig")
     log(f"Profile saved: {prof}")
+    if FROZEN:
+        return prof
     try:  # optional: push over USB with pymobiledevice3 (pip install pymobiledevice3)
         r = subprocess.run([sys.executable, "-m", "pymobiledevice3", "profile", "install", str(prof)],
                            capture_output=True, text=True, timeout=60, creationflags=NOWIN)
@@ -114,3 +121,52 @@ def ios_protect(out_dir: Path, log=print):
         log(f"USB push not available ({e.__class__.__name__}).")
     log("Email the profile to yourself and open it in the iPhone Mail app, then Settings > 'Profile Downloaded' > Install.")
     return prof
+
+
+def lan_ip():
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        s.connect(("10.255.255.255", 1))
+        return s.getsockname()[0]
+    except OSError:
+        return "127.0.0.1"
+    finally:
+        s.close()
+
+
+_server = None
+
+
+def serve_profile(prof: Path, port=8765):
+    """Serve the profile on the local Wi-Fi so an iPhone can open it from a QR code. Returns URL."""
+    global _server
+    data = prof.read_bytes()
+
+    class H(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            if self.path.startswith("/fg.mobileconfig"):
+                self.send_response(200)
+                self.send_header("Content-Type", "application/x-apple-aspen-config")
+                self.send_header("Content-Disposition", 'attachment; filename="FuckGambling.mobileconfig"')
+                self.send_header("Content-Length", str(len(data)))
+                self.end_headers()
+                self.wfile.write(data)
+            else:
+                self.send_response(302)
+                self.send_header("Location", "/fg.mobileconfig")
+                self.end_headers()
+
+        def log_message(self, *a):
+            pass
+
+    if _server is None:
+        for p in range(port, port + 20):
+            try:
+                _server = http.server.ThreadingHTTPServer(("0.0.0.0", p), H)
+                break
+            except OSError:
+                continue
+        threading.Thread(target=_server.serve_forever, daemon=True).start()
+    else:
+        _server.RequestHandlerClass = H
+    return f"http://{lan_ip()}:{_server.server_address[1]}/fg.mobileconfig"
