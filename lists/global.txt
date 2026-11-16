@@ -1,0 +1,22 @@
+# Extra gambling domains for every country (one per line). PRs welcome.
+bet365.com
+1xbet.com
+betwinner.com
+mostbet.com
+melbet.com
+22bet.com
+stake.com
+stake.us
+roobet.com
+rollbit.com
+bc.game
+pinnacle.com
+betway.com
+parimatch.com
+pokerstars.com
+ggpoker.com
+williamhill.com
+unibet.com
+bwin.com
+draftkings.com
+fanduel.com

@@ -1,0 +1,14 @@
+# Recovery / help sites. Never blocked; on Windows they are pinned to their real IP because
+# the DNS filter blocks some of them. Add yours!
+responsiblegambling.org.za
+gamblingtherapy.org
+gamblersanonymous.org
+gamcare.org.uk
+begambleaware.org
+gamstop.co.uk
+betstop.gov.au
+gamblinghelponline.org.au
+ncpgambling.org
+sadag.org
+yesilay.org.tr
+yedam.org.tr

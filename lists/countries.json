@@ -1,0 +1,11 @@
+{
+  "_comment": "Add your country! code = ISO 3166 alpha-2 lowercase. Helplines must be free/official. Optional files: lists/<code>.txt (extra domains), lists/mirrors-<code>.txt (brand names with numbered mirrors), lists/allow-<code>.txt (never block).",
+  "global": {"name": "Other / Global", "help": ["Gambling Therapy (free, online, many languages): gamblingtherapy.org", "Gamblers Anonymous: gamblersanonymous.org"]},
+  "za": {"name": "South Africa", "help": ["SA Responsible Gambling Foundation: 0800 006 008 (free, 24/7)", "SADAG: 0800 456 789 / crisis 0800 567 567"]},
+  "tr": {"name": "Türkiye", "help": ["YEDAM (Yeşilay): 115 (ücretsiz, 7/24)", "AMATEM bağımlılık merkezleri (MHRS)"]},
+  "gb": {"name": "United Kingdom", "help": ["National Gambling Helpline (GamCare): 0808 8020 133 (free, 24/7)", "GAMSTOP self-exclusion: gamstop.co.uk"]},
+  "us": {"name": "United States", "help": ["1-800-GAMBLER (1-800-426-2537)", "Gamblers Anonymous: gamblersanonymous.org"]},
+  "au": {"name": "Australia", "help": ["Gambling Help: 1800 858 858 (free, 24/7)", "BetStop self-exclusion: betstop.gov.au"]},
+  "nz": {"name": "New Zealand", "help": ["Gambling Helpline: 0800 654 655"]},
+  "de": {"name": "Deutschland", "help": ["BZgA Glücksspielsucht: 0800 1 37 27 00 (kostenlos)"]}
+}

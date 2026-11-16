@@ -1,0 +1,18 @@
+# South Africa - verified 2026-11 to be missing from DNS filter or high-risk
+wsb.co.za
+lulabet.com
+hollywoodbets.net
+betway.co.za
+sportingbet.co.za
+supabets.co.za
+gbets.co.za
+playabets.co.za
+lottostar.co.za
+yesplay.bet
+10bet.co.za
+easybet.co.za
+sunbet.co.za
+tictacbets.co.za
+jackpotcity.co.za
+betfred.co.za
+nationallottery.co.za

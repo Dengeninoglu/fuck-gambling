@@ -1,0 +1,10 @@
+# Never blocked (finance / government). Crypto exchanges are allowed by default; remove if they are a problem for you.
+binance.com
+binance.me
+bnbstatic.com
+binanceapi.com
+paypal.com
+wise.com
+revolut.com
+luno.com
+valr.com
