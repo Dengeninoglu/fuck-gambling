@@ -9,7 +9,7 @@ Free forever. Non-profit. No account. No ads. No data collected.</b></p>
   <a href="https://github.com/Dengeninoglu/fuck-gambling/releases/latest/download/FuckGambling.exe"><img alt="Download for Windows" src="https://img.shields.io/badge/DOWNLOAD-Windows%2010%20%2F%2011-e5484d?style=for-the-badge&logo=windows&logoColor=white"></a>
 </p>
 
-<p align="center"><i>Made for everyone who wants out.</i></p>
+<p align="center"><i>Made for everyone who wants out. · <a href="MANIFESTO.md">Manifesto</a> · <a href="MANIFESTO.tr.md">Manifesto (Türkçe)</a></i></p>
 
 ---
 
