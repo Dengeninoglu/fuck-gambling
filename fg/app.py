@@ -232,7 +232,8 @@ class App(tk.Tk):
             tk.Button(body, text="Open NextDNS sign-up (free)", bg=RED, fg="white", relief="flat", font=("Segoe UI", 10, "bold"),
                       cursor="hand2", command=lambda: webbrowser.open("https://my.nextdns.io/signup")).pack(anchor="w", pady=(2, 8))
             label("Step 2", bold=True)
-            label("In NextDNS: Parental Control tab  >  Categories  >  Add a category  >  Gambling", pady=(0, 8))
+            label("In NextDNS: Parental Control tab  >  Categories  >  Add a category  >  Gambling\n"
+                  "On the same page turn ON  'Block Bypass Methods'  (stops VPNs, proxies and Tor)", pady=(0, 8))
             label("Step 3", bold=True)
             label("Setup tab  >  copy your ID (6 characters) and paste it here:")
             r = tk.Frame(body, bg=BG)
