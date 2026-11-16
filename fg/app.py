@@ -150,14 +150,14 @@ class App(tk.Tk):
         txt = ("Segoe UI", 10)
         if self.phone.get() == "ios":
             prof = phones.ios_profile(Path.home() / "FuckGambling-DNS.mobileconfig")
-            url = phones.serve_profile(prof)
+            url = phones.PROFILE_URL
             tk.Label(win, text="iPhone - scan with the Camera app", fg=FG, bg=BG, font=big).pack(anchor="w")
-            tk.Label(win, text="Phone and PC must be on the same Wi-Fi. If Windows asks about the firewall, click Allow.",
+            tk.Label(win, text="Works on any Wi-Fi or mobile data. Open the link in Safari.",
                      fg="#aaa", bg=BG, font=("Segoe UI", 9), wraplength=420, justify="left").pack(anchor="w")
             self.draw_qr(win, url).pack(pady=10)
             steps = "\n".join([
-                "1. Open the iPhone Camera, point it at the code, tap the yellow link",
-                "2. Tap Allow  >  Close",
+                "1. Open the iPhone Camera, point it at the code, tap the yellow link (Safari)",
+                "2. 'Allow' the configuration profile download  >  Close",
                 "3. Settings  >  Profile Downloaded  >  Install (top right)  >  passcode  >  Install",
                 "4. Settings > General > VPN, DNS & Device Management > DNS: select FU#K!! G#MBLING",
                 "5. Settings > [your name] > iCloud > Private Relay: OFF",
@@ -166,7 +166,7 @@ class App(tk.Tk):
                 "'VPN & DNS' and 'Account Changes' to Don't Allow. (Guide: docs/IPHONE.md)",
             ])
             tk.Label(win, text=steps, fg=FG, bg=BG, font=txt, justify="left").pack(anchor="w")
-            tk.Label(win, text=f"No camera? Open in iPhone Safari:  {url}", fg="#888", bg=BG,
+            tk.Label(win, text=f"No camera? Type in iPhone Safari:  {url}", fg="#888", bg=BG,
                      font=("Consolas", 9)).pack(anchor="w", pady=(8, 0))
             self.log("iPhone profile ready. Scan the QR code with your iPhone.")
         else:

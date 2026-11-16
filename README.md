@@ -44,6 +44,10 @@ Gambling companies spend billions to keep people playing. This costs nothing and
 <img src="docs/img/android.png" width="380" alt="Android setup">
 </p>
 
+> 📱 **No computer? Set up your phone directly:**
+> **iPhone:** open [this link in Safari](https://dengeninoglu.github.io/fuck-gambling/FuckGambling.mobileconfig) → *Allow* → Settings → *Profile Downloaded* → *Install* → then Settings → General → VPN, DNS & Device Management → DNS → select *FU#K!! G#MBLING*.
+> **Android 9+:** Settings → search *Private DNS* → *Private DNS provider hostname* → type `child.joindns4.eu` → Save.
+
 ### Step 3 · Make it stick (most important)
 A blocker buys you time. These steps make sure an urge can't undo it in a weak moment:
 - 🔑 **Give a code to someone you trust.** iPhone: let them set the *Screen Time* passcode. Android: *Google Family Link*. They keep it, not you.
