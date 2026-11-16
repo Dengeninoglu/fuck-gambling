@@ -175,12 +175,30 @@
 
 <script>
   (function () {
-    var els = document.querySelectorAll('.reveal');
-    if (!('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('seen'); }); return; }
-    var io = new IntersectionObserver(function (entries) {
-      entries.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('seen'); io.unobserve(en.target); } });
-    }, { rootMargin: '0px 0px -10% 0px' });
-    els.forEach(function (e) { io.observe(e); });
+    // Reveal anything that has reached (or been scrolled past) the lower part of the screen.
+    // Checking position on scroll, not only intersection, means a fast fling or an #anchor jump
+    // can never leave content hidden.
+    var pending = Array.prototype.slice.call(document.querySelectorAll('.reveal'));
+    var queued = false;
+    function check() {
+      queued = false;
+      var limit = window.innerHeight * 0.92;
+      pending = pending.filter(function (el) {
+        if (el.getBoundingClientRect().top < limit) { el.classList.add('seen'); return false; }
+        return true;
+      });
+      if (!pending.length) {
+        window.removeEventListener('scroll', onScroll);
+        window.removeEventListener('resize', onScroll);
+      }
+    }
+    function onScroll() { if (!queued) { queued = true; requestAnimationFrame(check); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    window.addEventListener('load', check);
+    check();
+    // safety net: never keep content hidden for long
+    setTimeout(function () { pending.forEach(function (el) { el.classList.add('seen'); }); }, 6000);
   })();
 </script>
 </body>
